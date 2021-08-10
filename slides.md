@@ -1,26 +1,31 @@
 ---
 # try also 'default' to start simple
-theme: seriph
-# random image from a curated Unsplash collection by Anthony
-# like them? see https://unsplash.com/collections/94734566/slidev
-background: https://source.unsplash.com/collection/94734566/1920x1080
-# apply any windi css classes to the current slide
-class: 'text-center'
-# https://sli.dev/custom/highlighters.html
-highlighter: shiki
-# show line numbers in code blocks
-lineNumbers: false
-# some information about the slides, markdown enabled
-info: |
-  ## Slidev Starter Template
-  Presentation slides for developers.
+theme: ./mathema-2021
 
-  Learn more at [Sli.dev](https://sli.dev)
+# infos for the footer (on slides with the default-with-footer layout)
+occasion: "MD DevDays 2021"
+occasionLogoUrl: "img/MD-DD-Logo80.png"
+company: "Mathema"
+presenter: "Martin Grotz & Patrick Drechsler"
+contact: "martin.grotz@mathema.de | patrick.drechsler@mathema.de"
+
+# apply any windi css classes to the current slide
+class: "text-center"
+
+highlighter: shiki
+
+defaults:
+  layout: "default-with-footer"
+
+info: |
+  ## Von C# zu F# - Einführung in die Funktionale Programmierung
+  
+layout: cover
 ---
 
-# Page 1
+# Von C# zu F# - Einführung in die Funktionale Programmierung
 
-This is a normal page.
+### Martin Grotz und Patrick Drechsler
 
 ---
 src: content/subpage1.md

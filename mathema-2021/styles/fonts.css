@@ -1,0 +1,28 @@
+/* Font for main headline(s) */
+@font-face {
+  font-family: DroidSerif;
+  src: url("/fonts/droid-serif/DroidSerif-Regular.ttf");
+}
+
+/* Font for other headlines?? */
+@font-face {
+  font-family: InterSemibold;
+  src: url("/fonts/inter/Inter-SemiBold.ttf");
+}
+
+/* Font for quotes */
+@font-face {
+  font-family: DroidSerifItalic;
+  src: url("/fonts/droid-serif/DroidSerif-Italic.ttf");
+}
+
+/* Font for normal text */
+@font-face {
+  font-family: Inter;
+  src: url("/fonts/inter/Inter-Regular.ttf");
+}
+
+@font-face {
+  font-family: AmaticSC;
+  src: url("/fonts/AmaticSC/AmaticSC-Bold.ttf");
+}

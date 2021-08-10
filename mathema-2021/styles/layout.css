@@ -1,0 +1,82 @@
+:root {
+  --slidev-theme-primary: #c5003e;
+  --slidev-theme-gray: gray;
+}
+
+.object-fit-contain {
+  object-fit: contain;
+}
+
+.slidev-layout {
+  h1,
+  h2 {
+    background-image: url(./img/mat-pictogram-rgb.png);
+    background-repeat: no-repeat;
+    background-size: 50px;
+    background-position-y: center;
+    padding-left: 70px;
+    line-height: 70px;
+  }
+
+  h1 {
+    font-family: DroidSerif;
+  }
+
+  h2,
+  h3,
+  h4 {
+    font-family: Inter;
+  }
+
+  h1,
+  h2,
+  h3 {
+    color: var(--slidev-theme-primary);
+    text-transform: none;
+    opacity: 1 !important;
+  }
+
+  blockquote p,
+  blockquote ol li {
+    font-family: DroidSerifItalic;
+  }
+
+  p,
+  li {
+    font-family: Inter;
+  }
+
+  .handwritten-font {
+    font-family: AmaticSC, serif;
+    font-size: 1.7rem;
+    font-weight: bold;
+  }
+}
+
+.slidev-layout.cover {
+  @apply h-full grid;
+
+  h1 {
+    @apply text-5xl leading-20 pl-0;
+    background-image: none;
+
+  }
+
+  h1 + p {
+    @apply -mt-2 opacity-50 mb-4;
+  }
+
+  p + h2,
+  ul + h2,
+  table + h2 {
+    @apply mt-10;
+  }
+
+  h3 {
+    @apply text-sm pt-2 uppercase tracking-widest font-500 -ml-[0.05em];
+  }
+
+  h3:not(.opacity-100) {
+    @apply opacity-40;
+  }
+}
