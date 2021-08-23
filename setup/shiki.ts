@@ -5,7 +5,7 @@ export default defineShikiSetup(() => {
   return {
     theme: {
       dark: 'material-darker',
-      light: 'material-darker',
+      light: 'github-light',
     },
   }
 })
