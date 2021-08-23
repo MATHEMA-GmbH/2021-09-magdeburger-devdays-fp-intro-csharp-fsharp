@@ -185,7 +185,9 @@ var avgIncomeAdults =
 
 ---
 
-<img src="/content/images/fp-languages-overview.png" style="height: 28rem;"/>
+### Übersicht
+
+<ImgWithCaption image="/content/images/fp-languages-overview.png" caption="Get Programming with F#, Isaac Abraham, Fig. 1" />
 
 ---
 
