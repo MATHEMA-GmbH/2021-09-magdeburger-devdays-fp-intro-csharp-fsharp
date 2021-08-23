@@ -28,5 +28,1180 @@ layout: cover
 ### Martin Grotz und Patrick Drechsler
 
 ---
-src: content/subpage1.md
+
+## Lernziele
+
+- Grundlagen der funktionalen Programmierung
+- Funktionale Programmierung mit C#
+- Grundlagen von F#
+
 ---
+
+
+<!-- 
+===========================================================================================================
+02-FP-BASICS
+===========================================================================================================
+-->
+
+
+## FP 101
+
+- **Functions as First Class Citizens**
+- Immutability
+- Pure Functions (see Immutability)
+
+That's it!
+
+---
+
+#### Immutability in C# #
+
+
+```csharp
+public class Customer
+{
+  public string Name { get; set; } // set -> mutable :-(
+}
+```
+
+vs
+
+```csharp
+public class Customer
+{
+  public Customer(string name)
+  {
+    Name = name;
+  }
+  
+  public string Name { get; } // <- immutable
+}
+```
+
+---
+
+Syntax matters!
+
+Classic C#
+
+```csharp
+int Add(int a, int b)
+{
+  return a + b;
+}
+```
+
+Expression body
+
+```csharp
+int Add(int a, int b) => a + b;
+```
+---
+
+Syntax matters!
+
+Classic C#
+
+```csharp
+int Add(int a, int b)
+{
+  Console.WriteLine("bla"); // <- side effect!
+  return a + b;
+}
+```
+
+Expression body: side effects are less likely
+
+```csharp
+int Add(int a, int b) => a + b;
+```
+
+---
+
+#### 1st class functions in C# #
+
+
+```csharp
+// Func as parameter
+public string Greet(Func<string, string> greeterFunction, string name)
+{
+  return greeterFunction(name);
+}
+```
+
+```csharp
+Func<string, string> formatGreeting = (name) => $"Hello, {name}";
+var greetingMessage = Greet(formatGreeting, "dodnedder");
+// -> greetingMessage: "Hello, dodnedder"
+```
+
+---
+
+#### Pure Functions in C# #
+
+- haben niemals Seiteneffekte!
+- sollten immer nach `static` umwandelbar sein
+
+---
+
+### Imperativ...
+
+**Wie** mache ich etwas 
+
+```csharp
+var people = new List<Person>
+{
+    new Person { Age = 20, Income = 1000 },
+    new Person { Age = 26, Income = 1100 },
+    new Person { Age = 35, Income = 1300 }
+};
+
+var incomes = new List<int>();
+foreach (var person in people)
+{
+    if (person.Age > 25)
+    {
+        incomes.Add(person.Income);
+    }
+}
+
+var avg = incomes.Sum() / incomes.Count;
+```
+
+versus...
+
+---
+
+### Deklarativ
+
+**Was** will ich erreichen?
+
+Bsp: Filter / Map / Reduce
+
+```csharp
+var people = new List&lt;Person&gt; {
+  new Person { Age = 20, Income = 1000 },
+  new Person { Age = 26, Income = 1100 },
+  new Person { Age = 35, Income = 1300 }
+}
+
+var averageIncomeAbove25 = people
+  .Where(p => p.Age > 25) // "Filter"
+  .Select(p => p.Income)  // "Map"
+  .Average();             // "Reduce"
+```
+
+- aussagekräftiger
+- weniger fehleranfällig
+
+---
+
+<img src="/content/images/fp-languages-overview.png" style="height: 28rem;"/>
+
+---
+
+Schränken uns diese FP Paradigmen ein?
+
+---
+
+Wie kann man mit diesem "Purismus" Software schreiben, die etwas tut?
+
+---
+
+## Kleine Funktionen zu größeren verbinden
+
+- Gängige Vorgehensweise: Kleine Funktionen werden zu immer größeren Funktionalitäten zusammengesteckt
+- Problem: Nicht alle Funktionen passen gut zusammen
+
+<!-- 
+===========================================================================================================
+OPTION
+===========================================================================================================
+-->
+
+## Vorhandensein eines Werts
+#### oder: null muss weg.
+---
+
+```csharp
+// Enthält die Signatur die ganze Wahrheit?
+public string Stringify<T>(T data)
+{
+    return null;
+}
+```
+
+---
+
+```csharp
+// Sind Magic Values eine gute Idee?
+public int Intify(string s)
+{
+    int result = -1;
+    int.TryParse(s, out result);
+    return result;
+}
+```
+
+---
+
+```csharp
+public class Data
+{
+    public string Name;
+}
+
+public class Do
+{
+    public Data CreateData() => null;
+
+    public string CreateAndUseData()
+    {
+        var data = CreateData();
+        // kein null-Check -> ist dem Compiler egal
+        return data.Name;
+    }
+}
+```
+
+---
+
+## Option
+```
+// Pseudocode
+type Option<T> = Some<T> | None
+```
+- entweder ein Wert ist da - dann ist er in "Some" eingepackt
+- oder es ist kein Wert da, dann gibt es ein leeres "None"
+- alternative Bezeichnungen: Optional, Maybe
+
+---
+
+## Mit Option
+```csharp
+public Option<int> IntifyOption(string s)
+{
+    int result = -1;
+    bool success = int.TryParse(s, out result);
+    return success ? Some(result) : None;
+}
+```
+
+---
+
+### Wie komme ich an einen eingepackten Wert ran?
+> Pattern matching allows you to match a value against some patterns to select a branch of the code.
+
+```csharp
+public string Stringify<T>(Option<T> data)
+{
+    return data.Match(
+        None: () => "",
+        Some: (existingData) => existingData.ToString()
+    );
+}
+```
+
+---
+
+### Vorteile
+- Explizite Semantik: Wert ist da - oder eben nicht
+- Auch für Nicht-Programmierer verständlich(er): "optional" vs. "nullable"
+- Die Signatur von Match erzwingt eine Behandlung beider Fälle - nie wieder vergessene Null-Checks!
+- Achtung: In C# bleibt das Problem, dass "Option" auch ein Objekt ist - und daher selbst null sein kann
+
+---
+
+## LINQ - für Listen (IEnumerable in C#)
+
+Allg.: Funktionen, die auf eine Liste angewendet werden
+
+Bsp:
+
+- Option ist eigentlich nur eine Liste mit 2 Werten (Some und None)
+- Result -> Liste mit 2 Werten (Left und Right)
+- etc.
+
+---
+
+In FP unterscheidet man die Wrapper-Klassen (zB IEnumerable) anhand der Funktionen, die sie bereitstellen
+
+
+<!-- 
+===========================================================================================================
+LAYUMBA
+===========================================================================================================
+-->
+
+---
+
+### LaYumba
+
+<img src="/content/images/book-csharp-fp-with-comment.png" style="height: 12rem;"/>
+
+- NuGet Paket
+- kann nicht alles
+- Fokus: Didaktik (Ähnlichkeit mit F#, Haskell)
+- "einfache" Variante von [language-ext](https://github.com/louthy/language-ext)
+
+---
+
+<img src="/content/images/language-ext-screenshot-github-0.png" style="height: 28rem;"/>
+
+---
+
+<img src="/content/images/language-ext-screenshot-github-1.png" style="height: 28rem;"/>
+
+---
+
+<img src="/content/images/language-ext-screenshot-github-2.png" style="height: 28rem;"/>
+
+---
+
+<img src="/content/images/language-ext-screenshot-github-3.png" style="height: 28rem;"/>
+
+---
+
+<img src="/content/images/language-ext-screenshot-github-4.png" style="height: 28rem;"/>
+
+---
+
+<img src="/content/images/language-ext-screenshot-github-5.png" style="height: 28rem;"/>
+
+---
+
+<!-- 
+===========================================================================================================
+FSHARP
+===========================================================================================================
+-->
+
+# Einführung in F# #
+
+<img src="/content/images/fsharp256.png" style="height: 18rem;"/>
+
+---
+
+## F# #
+- Ursprünglich: Microsoft Forschungsprojekt
+- Heute: Community-driven
+- inspiriert von OCaml
+- Multi-Paradigma
+- Fokus auf funktionale Programmierung
+
+---
+
+## F# #
+- erzwingt keine puren Funktionen, sondern erlaubt Seiteneffekte
+- Statisch typisiert
+- voll integriert ins .NET Ökosystem
+- C# / VB.net Interop
+
+---
+
+## Besonderheiten
+- Significant whitespace
+- Reihenfolge der Definitionen in Datei wichtig
+- Reihenfolge der Dateien im Projekt wichtig
+
+---
+
+## Immutability als Default
+```fsharp
+// Achtung: = ist hier keine Zuweisung, sondern heißt 
+// "linke und rechte Seite sind gleich und bleiben es auch immer"
+let x = 3
+let add a b = a + b
+let m = if 3 > 0 then 7 else 42
+
+// Mutability nur auf Wunsch - normalerweise unnötig
+let mutable y = 3
+y <- 42
+```
+
+---
+
+## Typ-Inferenz
+```fsharp
+// Typen werden automatisch abgeleitet sofern möglich
+let double a = a * 2 // int -> int
+
+// Explizite Angaben möglich
+let doubleExplicit (a: int) : int = a * 2
+```
+
+---
+
+## Currying
+> Currying ist die Umwandlung einer Funktion mit mehreren Argumenten in eine Funktion mit einem Argument, die wiederum eine Funktion zurückgibt mit dem Rest der Argumente.
+
+```fsharp
+// int -> int -> int -> int
+// eigentlich: int -> (int -> (int -> int))
+let addThree a b c = a + b + c
+```
+
+---
+
+## Partial Application
+- Eine Funktion mit mehreren Parametern bekommt nur einen Teil ihrer Argumente übergeben - der Rest bleibt offen und kann später ausgefüllt werden
+```fsharp
+// Partial Application
+let add a b = a + b // int -> (int -> (int))
+let add2 = add 2 // (int -> (int))
+let six = add2 4 // (int)
+let ten = add2 8 // (int)
+```
+
+---
+
+## Pipe-Operator
+```fsharp
+// der letzte Parameter kann mit dem Ergebnis 
+// der vorherigen Expression ausgefüllt werden
+let double a = a * 2
+4 |> double // ergibt 8
+4 |> double |> double // ergibt 16
+```
+
+---
+
+## Discriminated Unions
+```fsharp
+// Discriminated Unions ("Tagged Union", "Sum Type", "Choice Type")
+type Vehicle = | Bike | Car | Bus
+
+// Pattern Matching zur Behandlung der verschiedenen Fälle
+let vehicle = Bike
+match vehicle with
+| Bike -> "Ima ridin my bike"
+| Car -> "Driving along in my automobile"
+| Bus -> "SPEED"
+
+```
+
+---
+
+## Discriminated Unions mit Werten
+```fsharp
+// auch mit unterschiedlichen(!) Daten an jedem Fall möglich
+type Shape =
+    | Circle of float
+    | Rectangle of float * float
+let c = Circle 42.42
+match c with
+| Circle radius -> radius * radius * System.Math.PI
+| Rectangle(width, height) -> width * height
+```
+
+---
+
+## Record Types
+```fsharp
+// Record Type
+type ShoppingCart = {
+    products: Product list
+    total: float
+    createdAt: System.DateTime
+}
+
+// Typ muss nur angegeben werden wenn er nicht eindeutig ist
+let shoppingCart = {
+    products = []
+    total = 42.42
+    createdAt = System.DateTime.Now
+}
+```
+
+---
+
+## Record Types
+- Immutable by default
+- Unmöglich einen ungültigen Record zu erzeugen
+- Structural Equality
+
+---
+
+## Structural Equality
+```fsharp
+// Structural Equality
+type Thing = {content: string; id: int}
+let thing1 = {content = "abc"; id = 15}
+let thing2 = {content = "abc"; id = 15}
+let equal = (thing1 = thing2) // true
+```
+
+- Record Types mit Structural Equality sind ideal, um sehr kompakt "Value Objects" ausdrücken zu können
+
+---
+
+## Structural Equality vs. DDD Aggregates
+- Möchte man die Standard-Equality nicht, ist es best practice, Equality und Comparison zu verbieten
+- dann muss explizit auf eine Eigenschaft verglichen werden (z.B. die Id)
+
+```fsharp
+[<NoEquality; NoComparison>]
+type NonEquatableNonComparable = {
+    Id: int
+}
+```
+
+---
+
+<!-- 
+===========================================================================================================
+VALUE OBJECTS
+===========================================================================================================
+-->
+
+# Value Objects
+
+---
+
+## Value Objects
+
+Warum?
+
+- Methoden sollten nicht lügen!
+  - Null: NullPointerException, Null-Checks
+  - Antipattern: Primitive Obsession
+
+---
+
+### Beispiele
+
+```csharp
+// :-(
+void Einzahlen(int wert, SomeEnum waehrung) { /* ... */ }
+
+// ;-)
+void Einzahlen(Geld geld) { /* ... */ }
+```
+
+```csharp
+class Kunde {
+    int Alter { get; set; } // :-(
+    
+    // ist `i` das aktuelle Alter oder das Geburtsjahr??
+    bool IstVolljaehrig(int i) { /* ... */}
+}
+
+class Kunde {
+    Alter Alter { get; set; } // ;-)
+
+    bool IstVolljaehrig(Alter alter) { /* ... */}
+
+    bool IstVolljaehrig(Geburtsjahr geburtsjahr) { /* ... */}
+}
+```
+
+---
+
+<img src="/content/images/wikipedia-value-objects.png" style="height: 18rem;"/>
+
+---
+
+## Value Objects
+
+- nur gültige Objekte erlaubt
+- immutable
+- equality by structure
+
+---
+
+### Nur gültige Objekte
+
+Es muss bei der Erstellung gewährleistet sein, dass das Objekt gültig ist.
+
+---
+
+### Nur gültige Objekte
+
+Optionen:
+
+- Konstruktor mit allen Parametern
+- statische Hilfsmethode & privater Konstruktor
+
+```csharp
+class Geld 
+{
+    int Betrag { get; }
+    Waehrung Waehrung { get; }
+
+    Geld(int betrag, Waehrung waehrung) {
+        if (!IsValid(betrag, Waehrung)) 
+            throw new InvalidGeldException();
+
+        Betrag = betrag;
+        Waehrung = waehrung;
+    }
+
+    bool IsValid(int betrag, Waehrung waehrung)
+        => betrag > 0 && waehrung != Waehrung.Undefined;
+}
+```
+
+---
+
+### Immutability
+
+Damit ein C# Objekt unveränderlich wird, muss gewährleistet sein, dass es auch **nach Erstellung nicht verändert wird**.
+
+- interne Werte dürfen ausschließlich vom Konstruktor verändert werden
+- kein public oder private setter
+- kein parameterloser Konstrukor
+
+---
+
+### Equality by structure
+
+Zwei Objekte sind gleich, wenn sie die gleichen Werte haben.
+
+---
+
+### Exkurs: Vergleichbarkeit
+
+- Equality by reference
+- Equality by id
+- Equality by structure
+
+---
+
+### Equality by structure
+
+Zwei Objekte sind gleich, wenn sie die gleichen Werte haben.
+
+- `Equals` und `GetHashcode` überschreiben
+
+```csharp
+override bool Equals(Geld other)
+    => other.Betrag   == this.Betrag &&
+       other.Waehrung == this.Waehrung;
+
+override int GetHashCode() { /* ... */ }
+```
+
+---
+
+<!-- 
+===========================================================================================================
+fortgeschrittene_konzepte
+===========================================================================================================
+-->
+
+# FP-Konzepte
+
+---
+
+<!-- 
+===========================================================================================================
+FUNKTOR
+===========================================================================================================
+-->
+
+### Problem: Wert in Container, Funktion kann nichts damit anfangen
+
+```fsharp
+// F#
+module X
+
+let toUpper (s : string) = s.ToUpper()
+
+let stringToOption s =
+    if String.IsNullOrWhiteSpace s then
+        None
+    else
+        Some s
+
+let nonEmptyStringToUpper s =
+    let nonEmpty = stringToOption s
+    // passt nicht: "string" erwartet, aber "string option" bekommen
+    let nonEmptyUpper = toUpper nonEmpty
+```
+
+---
+
+```csharp
+// C#
+using LaYumba.Functional;
+using static LaYumba.Functional.F;
+
+static class X
+{
+  string ToUpper(string s) => s.ToUpper();
+
+  Option<string> StringToOption(string s)
+    => string.IsNullOrEmpty(s) ? None : Some(s)
+
+  NonEmptyStringToUpper(string s)
+  {
+    var nonEmpty = StringToOption(s);
+    // passt nicht: "string" erwartet, aber "string option" bekommen
+    return ToUpper(s);
+  }
+}
+```
+
+---
+
+### Funktor ("Mappable")
+
+<img src="/content/resources/Funktor_1.png" style="height: 18rem;"/>
+
+---
+
+### Funktor ("Mappable")
+- Container mit "map" Funktion (die bestimmten Regeln folgt): "Mappable"
+- Bezeichnung in der FP-Welt: **Funktor**
+- 
+```fsharp
+  map: (a -> b) -> F a -> F b
+```
+- Andere Bezeichnungen für "map": fmap (z.B. in Haskell), Select (LINQ), <$>, <!>
+
+---
+
+### Wert in Container, Funktion passt nicht
+```fsharp
+let toUpper (s : string) = s.ToUpper()
+
+let stringToOption s =
+    if String.IsNullOrWhiteSpace s then
+        None
+    else
+        Some s
+
+let nonEmptyStringToUpper s =
+    let nonEmpty = stringToOption s
+    let nonEmptyUpper = Option.map toUpper nonEmpty
+```
+
+---
+
+<!-- 
+===========================================================================================================
+MONADE
+===========================================================================================================
+-->
+
+### Problem: Verkettung eingepackter Werte
+```fsharp
+let storeInDatabase path content = 
+  try
+    System.IO.File.WriteAllText(path, content)
+    Some content
+  with
+    ex -> None
+
+let stringToOption s =
+    if String.IsNullOrWhiteSpace s then None else Some s
+
+let toUpper (s : string) = s.ToUpper()
+
+let nonEmptyStringStoreInPersistenceAndToUpper path content =
+    let nonEmpty = stringToOption content
+    // passt nicht: "string" erwartet, aber "string option" bekommen
+    let stored = storeInDatabase path nonEmpty
+    // passt nicht: "string option" erwartet, 
+    // aber "string option option" bekommen
+    let nonEmptyUpper = Option.map toUpper stored
+```
+
+---
+
+### Monade ("Chainable")
+
+<img src="/content/resources/Monade_1.png" style="height: 18rem;"/>
+
+---
+
+### Monade ("Chainable")
+- Container mit "bind" Funktion (die bestimmten Regeln folgt): "Chainable"
+- Bezeichnung in der FP-Welt: **Monade**
+- 
+```fsharp
+  bind: (a -> M b) -> M a -> M b
+```
+- Andere Bezeichnungen für "bind": flatMap, SelectMany (LINQ), >>=
+
+---
+
+## Verkettung
+```fsharp
+let storeInDatabase path content = 
+  try
+    System.IO.File.WriteAllText(path, content)
+    Some content
+  with
+    ex -> None
+
+let stringToOption s =
+    if String.IsNullOrWhiteSpace s then None else Some s
+
+let toUpper (s : string) = s.ToUpper()
+
+let nonEmptyStringStoreInPersistenceAndToUpper path content =
+    let nonEmpty = stringToOption content
+    let stored = Option.bind (storeInDatabase path) nonEmpty
+    let nonEmptyUpper = Option.map toUpper stored
+```
+
+---
+
+<!-- 
+===========================================================================================================
+RAILWAY
+===========================================================================================================
+-->
+
+## Railway Oriented Programming
+
+Funktionale Programmierung wird oft als das "Zusammenstöpseln" von Funktionen dargestellt...
+
+---
+
+Beispiel:
+
+```
+f1: Eingabe string, Ausgabe int
+f2: Eingabe int, Ausgabe bool
+
+FP: Komposition von f1 und f2
+f3: Eingabe string, Ausgabe bool
+```
+
+```
+// FP Syntax
+f1: string -> int
+f2: int -> bool
+f3: string -> bool
+```
+
+---
+
+```csharp
+// Klassisch ===========================================================
+int F1(string s) => int.TryParse(s, out var i) ? i : 0;
+bool F2(int i) => i > 0;
+
+// "verschachtelter" Aufruf
+F2(F1("1")) // -> true
+F2(F1("0")) // -> false
+
+// "composition"
+bool F3(string s) => F2(F1(s));
+```
+
+```csharp
+// Method Chaining =====================================================
+// mit C# extension methods
+static int F1(this string s) => int.TryParse(s, out var i) ? i : 0;
+static bool F2(this int i) => i > 0;
+
+// Lesbarer (erst F1, dann F2)
+"1".F1().F2() // ->true
+"0".F1().F2() // ->false
+
+// Lesbarer (erst F1, dann F2)
+bool F3(string s) => s.F1().F2();
+```
+
+---
+
+Problem: Keine standardisierte Strategie für Fehlerbehandlung 
+
+---
+
+- Wenn wir davon ausgehen, dass Funktionen auch einen Fehlerfall haben, benötigen wir einen **neuen Datentyp**, der das abbilden kann
+
+---
+
+#### Result/Either
+
+- kann entweder 
+  - das Ergebnis beinhalten, oder 
+  - einen Fehlerfall
+
+---
+
+- In Railway-Sprech bedeutet dass, dass man "2-gleisig" fährt:
+
+- Jede **Funktion** bekommt eine Eingabe, und 
+  - hat "im Bauch" eine Weiche, die entscheidet ob 
+    - auf das Fehlergleis oder 
+    - auf das Erfolgsgleis umgeschaltet wird.
+
+- Die Wrapperklasse mit der **Funktion** ist das Entscheidende!
+
+---
+
+- In anderen Worten: die Funktionen haben aktuell 1 Eingabe (1 Gleis), und 2 Ausgaben (2 Gleise)
+
+<img src="/content/resources/rop-tracks-Page-2.png" style="height: 18rem;"/>
+
+---
+
+- Man benötigt also einen Mechanismus, der eine 2-gleisige Eingabe so umwandelt, dass eine Funktion, die eine 1-gleisige Eingabe erwartet, damit umgehen kann
+
+<img src="/content/resources/rop-tracks-Page-4.png" style="height: 18rem;"/>
+
+---
+
+#### Was muss dieser Mechanismus können?
+
+- wenn die Eingabe fehlerhaft ist, muss die Funktion nichts tun, und kann den Fehler weiterreichen
+- wenn die Eingabe nicht fehlerhaft ist, wird der Wert an die Funktion gegeben
+
+---
+
+
+```haskell
+bind: (string -> Result int) -> Result string -> Result int
+
+bind: (a -> M b) -> M a -> M b
+```
+
+- FP-Jargon: eine Wrapper-Klasse, die `bind` bereitstellt, wird **Monade** genannt (sehr stark vereinfacht!).
+
+Note:
+Beispiel: siehe `ChainingOptions.Chaining_option_returning_functions`.
+
+
+---
+
+- `Either` besteht aus 2 Teilen
+  - `Left`
+  - `Right` ("richtig"...)
+- `Result` besteht aus 2 Teilen
+  - `Failure`
+  - `Success`
+
+---
+
+- `Option` hat `Some(T)` und `None`
+
+```csharp
+Option<string> IsValidOpt(string s) =>
+    string.IsNullOrEmpty(s)
+        ? None
+        : Some(s);
+```
+
+- `Either`/`Result` ist ähnlich zu `Option`
+- `None` wird durch `Failure`/`Left` ersetzt (frei wählbar, z.B. selbst definierter Error Typ).
+
+```csharp
+Either<string, string> IsValidEither(string s)
+    => string.IsNullOrEmpty(s)
+        ? (Either<string, string>) Left("ups")
+        : Right(s);
+```
+
+
+
+---
+
+<!-- 
+===========================================================================================================
+APPLICATIVE
+===========================================================================================================
+-->
+### Problem: Funktion mit mehreren eingepackten Parametern
+
+```fsharp
+let add a b = a + b
+
+let onlyPositive i =
+  if i > 0 then
+    Some i
+  else
+    None
+
+let addTwoNumbers a b =
+  let positiveA = onlyPositive a
+  let positiveB = onlyPositive b
+  // passt nicht, 2x int erwartet, aber 2x int option übergeben
+  let sum = add positiveA positiveB
+
+  // für zwei in F# bereits vordefiniert:
+  let sum = Option.map2 add positiveA positiveB
+
+  // aber was, wenn man mehr Parameter hat?
+
+```
+
+---
+
+### Applicative
+
+<img src="/content/resources/Applicative_1_small.png" style="height: 18rem;"/>
+
+---
+
+### Applicative
+
+- Container mit "apply" Funktion (die bestimmten Regeln folgt): Applicative
+- Bezeichnung in der FP-Welt: **Applicative Functor**
+
+```fsharp
+  apply: AF (a -> b) -> AF a -> AF b
+```
+
+- Andere Bezeichnungen für "apply": ap, <*>
+
+---
+
+### Funktion mit mehreren Parametern
+
+```fsharp
+// F#
+let sum a b c = a + b + c
+
+let onlyPositive i =
+    if i > 0 then Some i
+    else None
+
+let addNumbers a b c =
+    let positiveA = onlyPositive a
+    let positiveB = onlyPositive b
+    let positiveC = onlyPositive c
+
+    // sum ist vom Typ: (int -> int -> int -> int)
+    // jede Zeile füllt ein Argument mehr aus
+    // (Partial Application dank Currying)
+    let (sum' : (int -> int -> int) option) = Option.map sum positiveA
+    let (sum'' : (int -> int) option) = Option.apply sum' positiveB
+    let (sum''' : (int) option) = Option.apply sum'' positiveC
+```
+
+---
+
+### Funktion mit mehreren Parametern
+
+```csharp
+// C#
+Func<int, int, int, int> sum = (a, b, c) => a + b + c;
+
+Func<int, Validation<int>> onlyPositive = i
+    => i > 0
+        ? Valid(i)
+        : Error($"Number {i} is not positive.");
+
+Validation<int> AddNumbers(int a, int b, int c) {
+    return Valid(sum)              // returns int -> int -> int -> int
+        .Apply(onlyPositive(a))    // returns int -> int -> int
+        .Apply(onlyPositive(b))    // returns int -> int
+        .Apply(onlyPositive(c));   // returns int
+
+AddNumbers(1, 2, 3);    // --> Valid(6)
+AddNumbers(-1, -2, -3); // --> [
+                        // Error("Number -1 is not positive"),
+                        // Error("Number -2 is not positive"),
+                        // Error("Number -3 is not positive")
+                        // ]
+```
+
+---
+
+<!-- 
+===========================================================================================================
+VERANSTALTUNGEN
+===========================================================================================================
+-->
+
+### Interessante Veranstaltungen
+
+#### BusConf
+
+[https://www.bus-conf.org/](https://www.bus-conf.org/)
+<img src="/content/resources/BusConf.png" style="height: 18rem;"/>
+
+---
+
+### Lambda Lounge Nürnberg
+
+[https://www.meetup.com/de-DE/Lambda-Lounge-Funktionale-Programmierung-Nurnberg/](https://www.meetup.com/de-DE/Lambda-Lounge-Funktionale-Programmierung-Nurnberg/)
+<img src="/content/resources/LambdaLounge.png" style="height: 18rem;"/>
+
+---
+
+#### Softwerkskammer
+
+[https://www.softwerkskammer.org/groups/nuernberg](https://www.softwerkskammer.org/groups/nuernberg)
+<img src="/content/resources/Softwerkskammer.png" style="height: 18rem;"/>
+
+---
+
+<!-- 
+===========================================================================================================
+F# in bestehendes Projekt integrieren
+===========================================================================================================
+-->
+
+## F# in bestehendes Projekt integrieren
+
+### Scripting zur Automation
+
+- statisch typisierte Skripte
+- .fsx Files
+- kann C# mittlerweile auch
+
+---
+
+### Tests
+
+- FsUnit für lesbarere Tests
+<img src="/content/resources/FsUnit.png" style="height: 18rem;"/>
+
+---
+
+- FsCheck für Property Based Testing
+<img src="/content/resources/FsCheck.png" style="height: 18rem;"/>
+
+---
+
+- Unquote für besseren "Callstack" bei fehlschlagenden Tests
+<img src="/content/resources/Unquote.png" style="height: 18rem;"/>
+
+---
+
+- für Mocks: Object Expressions für direkte Interface-Implementierung, Foq, mountebank mit F# Binding
+  <img src="/content/resources/mountebank.png" style="height: 18rem;"/>
+
+---
+
+- Browser-Fernsteuerung mit canopy
+  <img src="/content/resources/canopy.png" style="height: 18rem;"/>
+
+---
+
+- BDD-Tests mit TickSpec
+  <img src="/content/resources/TickSpec.png" style="height: 18rem;"/>
+
+---
+
+### Builds
+
+- FAKE als erweiterbare DSL für Build-Tasks
+  <img src="/content/resources/FAKE.png" style="height: 18rem;"/>
+  
+- Paket als Alternative zu Nuget
+  <img src="/content/resources/Paket.png" style="height: 18rem;"/>
+ 
+---
+
+## Weitere Nutzungsmöglichkeiten
+
+- Webseiten mit Fable
+  <img src="/content/resources/Fable.png" style="height: 18rem;"/>
+
+---
+
+- Mobile Apps mit Fabulous
+  <img src="/content/resources/Fabulous.png" style="height: 18rem;"/>
+
+---
+
+- Full-Stack-Webanwendungen mit dem SAFE-Stack
+  <img src="/content/resources/SAFE.png" style="height: 18rem;"/>
