@@ -152,46 +152,32 @@ layout: two-cols
 **Wie** mache ich etwas 
 
 ```csharp
-var people = new List<Person>
-{
-    new Person { Age = 20, Income = 1000 },
-    new Person { Age = 26, Income = 1100 },
-    new Person { Age = 35, Income = 1300 }
-};
-
 var incomes = new List<int>();
 foreach (var person in people)
 {
-    if (person.Age > 25)
+    if (person.Age > 18)
     {
         incomes.Add(person.Income);
     }
 }
 
-var avg = incomes.Sum() / incomes.Count;
+var avgIncomeAdults = incomes.Sum() / incomes.Count;
 ```
-
-versus...
 
 ::right::
 
-### Deklarativ
+### ...versus Deklarativ
 
 **Was** will ich erreichen?
 
 Bsp: Filter / Map / Reduce
 
 ```csharp
-var people = new List<Person> {
-  new Person { Age = 20, Income = 1000 },
-  new Person { Age = 26, Income = 1100 },
-  new Person { Age = 35, Income = 1300 }
-}
-
-var averageIncomeAbove25 = people
-  .Where(p => p.Age > 25) // "Filter"
-  .Select(p => p.Income)  // "Map"
-  .Average();             // "Reduce"
+var avgIncomeAdults = 
+  people
+    .Where(p => p.Age > 18) // "Filter"
+    .Select(p => p.Income)  // "Map"
+    .Average();             // "Reduce"
 ```
 
 - aussagekräftiger
