@@ -55,7 +55,7 @@ That's it!
 
 ---
 
-#### Immutability in C# #
+### Immutability in C# #
 
 
 ```csharp
@@ -119,7 +119,7 @@ int Add(int a, int b) => a + b;
 
 ---
 
-#### 1st class functions in C# #
+### 1st class functions in C# #
 
 
 ```csharp
@@ -132,8 +132,8 @@ public string Greet(Func<string, string> greeterFunction, string name)
 
 ```csharp
 Func<string, string> formatGreeting = (name) => $"Hello, {name}";
-var greetingMessage = Greet(formatGreeting, "dodnedder");
-// -> greetingMessage: "Hello, dodnedder"
+var greetingMessage = Greet(formatGreeting, "MD Dev Days");
+// -> greetingMessage: "Hello, MD Dev Days"
 ```
 
 ---
@@ -143,6 +143,8 @@ var greetingMessage = Greet(formatGreeting, "dodnedder");
 - haben niemals Seiteneffekte!
 - sollten immer nach `static` umwandelbar sein
 
+---
+layout: two-cols
 ---
 
 ### Imperativ...
@@ -171,7 +173,7 @@ var avg = incomes.Sum() / incomes.Count;
 
 versus...
 
----
+::right::
 
 ### Deklarativ
 
