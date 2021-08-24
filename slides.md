@@ -166,6 +166,8 @@ var avgIncomeAdults = incomes.Sum() / incomes.Count;
 
 ::right::
 
+<v-click>
+
 ### ...versus Deklarativ
 
 **Was** will ich erreichen?
@@ -183,6 +185,8 @@ var avgIncomeAdults =
 - aussagekräftiger
 - weniger fehleranfällig
 
+</v-click>
+
 ---
 
 ### Übersicht
@@ -191,18 +195,19 @@ var avgIncomeAdults =
 
 ---
 
-Schränken uns diese FP Paradigmen ein?
+<v-clicks>
 
----
+- Schränken uns diese FP Paradigmen ein?
+- Wie kann man mit diesem "Purismus" Software schreiben, die etwas tut?
 
-Wie kann man mit diesem "Purismus" Software schreiben, die etwas tut?
-
----
-
-## Kleine Funktionen zu größeren verbinden
+- Kleine Funktionen zu größeren verbinden
 
 - Gängige Vorgehensweise: Kleine Funktionen werden zu immer größeren Funktionalitäten zusammengesteckt
 - Problem: Nicht alle Funktionen passen gut zusammen
+
+</v-clicks>
+
+---
 
 <!-- 
 ===========================================================================================================
@@ -212,7 +217,8 @@ OPTION
 
 ## Vorhandensein eines Werts
 #### oder: null muss weg.
----
+
+<v-click at="1">
 
 ```csharp
 // Enthält die Signatur die ganze Wahrheit?
@@ -222,7 +228,9 @@ public string Stringify<T>(T data)
 }
 ```
 
----
+</v-click>
+
+<v-click at="2">
 
 ```csharp
 // Sind Magic Values eine gute Idee?
@@ -233,6 +241,8 @@ public int Intify(string s)
     return result;
 }
 ```
+
+</v-click>
 
 ---
 
@@ -360,6 +370,8 @@ LAYUMBA
 <img src="/content/images/language-ext-screenshot-github-5.png" style="height: 28rem;"/>
 
 ---
+layout: two-cols
+---
 
 <!-- 
 ===========================================================================================================
@@ -367,37 +379,42 @@ FSHARP
 ===========================================================================================================
 -->
 
-# Einführung in F# #
+# F# #
 
 <img src="/content/images/fsharp256.png" style="height: 18rem;"/>
 
----
+::right::
 
-## F# #
+<v-click>
+
 - Ursprünglich: Microsoft Forschungsprojekt
 - Heute: Community-driven
 - inspiriert von OCaml
 - Multi-Paradigma
 - Fokus auf funktionale Programmierung
 
----
+</v-click>
 
-## F# #
+<v-click>
+
 - erzwingt keine puren Funktionen, sondern erlaubt Seiteneffekte
 - Statisch typisiert
 - voll integriert ins .NET Ökosystem
-- C# / VB.net Interop
+- C# / VB.Net Interop
+
+</v-click>
 
 ---
 
-## Besonderheiten
+## F# Besonderheiten
 - Significant whitespace
 - Reihenfolge der Definitionen in Datei wichtig
 - Reihenfolge der Dateien im Projekt wichtig
 
 ---
 
-## Immutability als Default
+## F# Immutability als Default
+
 ```fsharp
 // Achtung: = ist hier keine Zuweisung, sondern heißt 
 // "linke und rechte Seite sind gleich und bleiben es auch immer"
@@ -412,7 +429,8 @@ y <- 42
 
 ---
 
-## Typ-Inferenz
+## F# Typ-Inferenz
+
 ```fsharp
 // Typen werden automatisch abgeleitet sofern möglich
 let double a = a * 2 // int -> int
@@ -424,6 +442,7 @@ let doubleExplicit (a: int) : int = a * 2
 ---
 
 ## Currying
+
 > Currying ist die Umwandlung einer Funktion mit mehreren Argumenten in eine Funktion mit einem Argument, die wiederum eine Funktion zurückgibt mit dem Rest der Argumente.
 
 ```fsharp
@@ -435,7 +454,9 @@ let addThree a b c = a + b + c
 ---
 
 ## Partial Application
+
 - Eine Funktion mit mehreren Parametern bekommt nur einen Teil ihrer Argumente übergeben - der Rest bleibt offen und kann später ausgefüllt werden
+  
 ```fsharp
 // Partial Application
 let add a b = a + b // int -> (int -> (int))
@@ -447,6 +468,7 @@ let ten = add2 8 // (int)
 ---
 
 ## Pipe-Operator
+
 ```fsharp
 // der letzte Parameter kann mit dem Ergebnis 
 // der vorherigen Expression ausgefüllt werden
@@ -479,15 +501,26 @@ match vehicle with
 type Shape =
     | Circle of float
     | Rectangle of float * float
+
 let c = Circle 42.42
+
 match c with
 | Circle radius -> radius * radius * System.Math.PI
 | Rectangle(width, height) -> width * height
 ```
 
 ---
+layout: two-cols
+---
 
 ## Record Types
+
+- Immutable by default
+- Unmöglich einen ungültigen Record zu erzeugen
+- Structural Equality
+
+::right::
+
 ```fsharp
 // Record Type
 type ShoppingCart = {
@@ -496,20 +529,13 @@ type ShoppingCart = {
     createdAt: System.DateTime
 }
 
-// Typ muss nur angegeben werden wenn er nicht eindeutig ist
+// Typ muss nur angegeben werden wenn nicht eindeutig
 let shoppingCart = {
     products = []
     total = 42.42
     createdAt = System.DateTime.Now
 }
 ```
-
----
-
-## Record Types
-- Immutable by default
-- Unmöglich einen ungültigen Record zu erzeugen
-- Structural Equality
 
 ---
 
@@ -542,14 +568,11 @@ type NonEquatableNonComparable = {
 <!-- 
 ===========================================================================================================
 VALUE OBJECTS
+TODO: Patrick: Folien eindampfen
 ===========================================================================================================
 -->
 
 # Value Objects
-
----
-
-## Value Objects
 
 Warum?
 
@@ -682,6 +705,12 @@ fortgeschrittene_konzepte
 
 # FP-Konzepte
 
+- Functor
+- Monad
+- Applicative
+  
+---
+layout: two-cols
 ---
 
 <!-- 
@@ -691,6 +720,8 @@ FUNKTOR
 -->
 
 ### Problem: Wert in Container, Funktion kann nichts damit anfangen
+
+<v-click>
 
 ```fsharp
 // F#
@@ -706,11 +737,16 @@ let stringToOption s =
 
 let nonEmptyStringToUpper s =
     let nonEmpty = stringToOption s
-    // passt nicht: "string" erwartet, aber "string option" bekommen
+    // passt nicht: 
+    // "string" erwartet, aber "string option" bekommen
     let nonEmptyUpper = toUpper nonEmpty
 ```
 
----
+</v-click>
+
+::right::
+
+<v-click>
 
 ```csharp
 // C#
@@ -727,11 +763,14 @@ static class X
   NonEmptyStringToUpper(string s)
   {
     var nonEmpty = StringToOption(s);
-    // passt nicht: "string" erwartet, aber "string option" bekommen
+    // passt nicht: 
+    // "string" erwartet, aber "string option" bekommen
     return ToUpper(s);
   }
 }
 ```
+
+</v-click>
 
 ---
 
@@ -744,7 +783,6 @@ static class X
 ### Funktor ("Mappable")
 - Container mit "map" Funktion (die bestimmten Regeln folgt): "Mappable"
 - Bezeichnung in der FP-Welt: **Funktor**
-- 
 ```fsharp
   map: (a -> b) -> F a -> F b
 ```
@@ -752,8 +790,10 @@ static class X
 
 ---
 
-### Wert in Container, Funktion passt nicht
+### Lösung: Wert in Container mit "map" auspacken
+
 ```fsharp
+// F#
 let toUpper (s : string) = s.ToUpper()
 
 let stringToOption s =
