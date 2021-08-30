@@ -7,13 +7,17 @@ const props = defineProps({
   },
   caption: {
       type: String
+  },
+  height: {
+    type: String
   }
 })
 </script>
 
+
 <template>
     <figure>
-        <img :src="props.image" style="height: 28rem;" />
-        <figcaption style="font-size: small">{{ props.caption }}</figcaption>
+        <img :src="props.image" v-bind:style="{ height: props.height }" />
+        <figcaption style="font-size: x-small; font-style: italic;">{{ props.caption }}</figcaption>
     </figure>
 </template>

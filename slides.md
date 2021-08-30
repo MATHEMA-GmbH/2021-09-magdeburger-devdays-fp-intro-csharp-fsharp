@@ -6,7 +6,7 @@ theme: ./mathema-2021
 occasion: "MD DevDays 2021"
 occasionLogoUrl: "img/MD-DD-Logo80.png"
 company: "Mathema"
-presenter: "Martin Grotz & Patrick Drechsler"
+presenter: ""
 contact: "martin.grotz@mathema.de | patrick.drechsler@mathema.de"
 
 # apply any windi css classes to the current slide
@@ -23,13 +23,13 @@ info: |
 layout: cover
 ---
 
-# Von C# zu F# - Einführung in die Funktionale Programmierung
-
+# Von C# zu F# 
+## Einführung in die Funktionale Programmierung
 ### Martin Grotz und Patrick Drechsler
 
 ---
 
-## Lernziele
+## Agenda
 
 - Grundlagen der funktionalen Programmierung
 - Funktionale Programmierung mit C#
@@ -83,7 +83,7 @@ public class Customer
 }
 ```
 
-vs
+vs.
 
 ```csharp
 public class Customer
@@ -99,14 +99,21 @@ public class Customer
 
 ---
 
-#### Pure Functions in C# #
+### Pure Functions in C# #
 
 - haben niemals Seiteneffekte!
 - sollten immer nach `static` umwandelbar sein
 
+<div class="mt-3">&nbsp;</div>
+
+### Seiteneffekte
+- Implizite Parameter
+- Auswirkungen nach außen von innerhalb der Funktion
+- Es macht einen Unterschied, wann oder wie oft die Funktion aufgerufen wird  
+
 ---
 
-Syntax matters!
+### Syntax matters!
 
 Classic C#
 
@@ -117,14 +124,14 @@ int Add(int a, int b)
 }
 ```
 
+vs.
+
 Expression body
 
 ```csharp
 int Add(int a, int b) => a + b;
 ```
 ---
-
-Syntax matters!
 
 Classic C#
 
@@ -135,6 +142,8 @@ int Add(int a, int b)
   return a + b;
 }
 ```
+
+vs.
 
 Expression body: side effects are less likely
 
@@ -147,7 +156,7 @@ int Add(int a, int b) => a + b;
 ### Composition
 
 - Kleine Funktionen zu großer Funktionalität zusammenstecken
-- Bewusste Aufteilung des Codes in Daten, Pure Funktionen und Funktionen mit Seiteneffekten
+- Bewusste Aufteilung des Codes in Daten, pure Funktionen und Funktionen mit Seiteneffekten
 - Problem: Nicht alle Funktionen passen in Sachen Parameter und Rückgabewert zusammen
 
 ---
@@ -155,9 +164,7 @@ int Add(int a, int b) => a + b;
 ## Vorteile von FP
 - Pure Funktionen sind leichter testbar
 - Kleine Funktionen sind leichter zu erfassen
-- Komposition führt zu besserer Wandelbarkeit und Erweiterbarkeit 
-
-- TODO: Beispiel/Vergleich C# vs. F# Pipe
+- Komposition auf allen Ebenen führt zu besserer Wandelbarkeit und Erweiterbarkeit 
 
 ---
 layout: two-cols
@@ -207,17 +214,7 @@ var avgIncomeAdults =
 
 ### Übersicht
 
-<ImgWithCaption image="/content/images/fp-languages-overview.png" caption="Get Programming with F#, Isaac Abraham, Fig. 1" />
-
----
-
-<v-clicks>
-
-- Schränken uns diese FP-Paradigmen ein?
-- Wie kann man mit diesem "Purismus" Software schreiben, die etwas tut?
-
-
-</v-clicks>
+<ImgWithCaption height="21rem" image="/content/images/fp-languages-overview.png" caption="Get Programming with F#, Isaac Abraham, Fig. 1" />
 
 ---
 
@@ -330,10 +327,6 @@ public string Stringify<T>(Option<T> data)
 
 - Allg.: Funktionen, die auf eine Liste angewendet werden
 - Deklarativ
-
----
-
-In FP kategorisiert man die Wrapper-Klassen (z.B. IEnumerable) anhand der Funktionen, die sie bereitstellen
 
 
 <!-- 
@@ -483,6 +476,16 @@ let ten = add2 8 // (int)
 let double a = a * 2
 4 |> double // ergibt 8
 4 |> double |> double // ergibt 16
+
+// Beispiel aus der Praxis
+let placeOrder : PlaceOrderWorkflow =
+  fun unvalidatedOrder ->
+    unvalidatedOrder
+    |> validateOrder
+    |> priceOrder
+    |> acknowledgeOrder
+    |> createEvents
+
 ```
 
 ---
@@ -713,8 +716,8 @@ fortgeschrittene_konzepte
 
 # FP-Konzepte für die Komposition von Funktionen
 
-- Functor
-- Monad
+- Funktor
+- Monade
 - Applicative
   
 ---
@@ -733,8 +736,6 @@ FUNKTOR
 
 ```fsharp
 // F#
-module X
-
 let toUpper (s : string) = s.ToUpper()
 
 let stringToOption (s : string) : string option =
@@ -799,7 +800,7 @@ static class X
 
 ---
 
-### Lösung: Wert in Container mit "map" auspacken
+### Lösung: Wert in Container mit "map" auspacken, Funktion anwenden, einpacken
 
 ```fsharp {all|12-13}
 // F#
@@ -815,6 +816,8 @@ let nonEmptyStringToUpper s =
     let nonEmpty = stringToOption s
     let nonEmptyUpper = Option.map toUpper nonEmpty
     // nonEmptyUpper ist wieder "string option", obwohl toUpper "string" als Rückgabetyp hat
+    // map: (a -> b) -> F a -> F b
+    // map: (string -> string) -> Option<string> -> Option<string>
 ```
 
 ---
@@ -827,7 +830,6 @@ MONADE
 
 ### Problem: Verkettung eingepackter Werte
 ```fsharp
-// TODO: Ist das überhaupt gültiger F# Code?
 let isNotEmpty (s : string) : string option =
     if String.IsNullOrWhiteSpace s then None else Some s
 
@@ -845,6 +847,7 @@ let parseAndDouble input =
     let parsedInt = Option.map toInt nonEmpty
     // passt nicht: "int option" erwartet, 
     // aber "int option option" bekommen
+    // -> Funktor mit map reicht nicht aus!
     let doubled = Option.map double parsedInt
 ```
 
@@ -869,7 +872,6 @@ let parseAndDouble input =
 
 ## Verkettung
 ```fsharp {all|16}
-// TODO: Ist das überhaupt gültiger F# Code?
 let isNotEmpty (s : string) : string option =
     if String.IsNullOrWhiteSpace s then None else Some s
 
@@ -884,15 +886,11 @@ let double (num : int) : int = num * 2
 
 let parseAndDouble input =
     let nonEmpty = isNotEmpty input // nonEmpty ist "string option"
+    // bind: (a -> M b) -> M a -> M b
+    // bind: (string -> Option<int>) -> Option<string> -> Option<int>
     let parsedInt = Option.bind toInt nonEmpty // parsedInt ist jetzt "int option"
     let doubled = Option.map double parsedInt // doubled ist "int option"
 
-    // TODO: Ist das elegant, oder eher abschreckend? Ich glaube eher letzteres...
-    // Kurzschreibweise mit Pipeline- und Infix-Operatoren:
-    // input 
-    // |> isNotEmpty 
-    // >>= toInt 
-    // <!> double
 ```
 
 ---
@@ -903,7 +901,7 @@ RAILWAY
 ===========================================================================================================
 -->
 
-## Elegante Fehlerbehandlung mit Railway Oriented Programming
+## Exkurs: Elegante Fehlerbehandlung mit Railway Oriented Programming
 
 Funktionale Programmierung wird oft als das "Zusammenstöpseln" von Funktionen dargestellt...
 
@@ -957,19 +955,22 @@ bool F3(string s) => s.F1().F2();
 
 ---
 
-Problem: Keine standardisierte Strategie für Fehlerbehandlung 
-
----
-
+- Problem: Keine standardisierte Strategie für Fehlerbehandlung 
 - Wenn wir davon ausgehen, dass Funktionen auch einen Fehlerfall haben, benötigen wir einen **neuen Datentyp**, der das abbilden kann
 
----
 
-#### Result
+<v-click>
+
+<div class="mt-6">&nbsp;</div>
+
+### Result
 
 - kann entweder 
   - das Ergebnis beinhalten (Success)  
   - oder einen Fehlerfall (Failure)
+
+</v-click>
+
 
 ---
 
@@ -1025,6 +1026,10 @@ Either<string, string> IsValidEither(string s)
 
 ---
 
+## Zurück zur Funktions-Komposition
+
+---
+
 <!-- 
 ===========================================================================================================
 APPLICATIVE
@@ -1032,7 +1037,7 @@ APPLICATIVE
 -->
 ### Problem: Funktion mit mehreren eingepackten Parametern
 
-Häufiger Anwendungsfall: Validierung von Eingabedaten, Aufruf des Workflows nur, wenn alle Daten korrekt sind.
+Häufiger Anwendungsfall: Validierung von Eingabedaten
 
 ```fsharp
 let add a b = a + b
@@ -1060,7 +1065,7 @@ let addTwoNumbers a b =
 
 ### Applicative
 
-<img src="/content/resources/Applicative_1_small.png" style="height: 18rem;"/>
+<img src="/content/resources/Applicative_1_small.png" style="height: 21rem;"/>
 
 ---
 
@@ -1138,6 +1143,8 @@ AddNumbers(-1, -2, -3); // --> [
 - Funktor, Monade, Applicative sind dabei Eigenschaften des Datentyps ("implementiert dieser die entsprechende Funktion - also map, bind, apply").
 - Jeder Datentyp, der die Funktion implementiert, kann "austauschbar" verwendet werden!
 
+---
+
 <!-- 
 ===========================================================================================================
 VERANSTALTUNGEN
@@ -1175,19 +1182,24 @@ F# in bestehendes Projekt integrieren
 
 ## F# - spannende Projekte
 
-- TODO: Farmer
+- Azure-Deployments mit [Farmer](https://compositionalit.github.io/farmer/)
+  <img src="/content/resources/farmer.png" style="height: 18rem;"/>
 
 --- 
 
-- Webseiten mit Fable
+- Webseiten mit [Fable](https://fable.io/)
   <img src="/content/resources/Fable.png" style="height: 18rem;"/>
 
 ---
 
-- Mobile Apps mit Fabulous
+- Mobile Apps mit [Fabulous](https://fsprojects.github.io/Fabulous/)
   <img src="/content/resources/Fabulous.png" style="height: 18rem;"/>
 
 ---
 
-- Full-Stack-Webanwendungen mit dem SAFE-Stack
+- Full-Stack-Webanwendungen mit dem [SAFE-Stack](https://safe-stack.github.io/)
   <img src="/content/resources/SAFE.png" style="height: 18rem;"/>
+
+---
+
+TODO: Danke/Kontakt Folie
