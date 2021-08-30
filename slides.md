@@ -237,6 +237,8 @@ layout: two-cols
 </v-click>
 
 ---
+layout: two-cols
+---
 
 <!-- 
 ===========================================================================================================
@@ -248,7 +250,7 @@ OPTION
 
 ### Vorhandensein eines Werts
 
-<v-click at="1">
+<v-click at="0">
 
 ```csharp
 // Enthält die Signatur die ganze Wahrheit?
@@ -274,9 +276,29 @@ public int Intify(string s)
 
 </v-click>
 
+::right::
+
+<v-click at="1">
+
+<ImgWithCaption height="21rem" image="/content/images/0-vs-null-explained-using-a-toilet-paper-roll-programming.jpg" caption="https://starecat.com/0-vs-null-explained-using-a-toilet-paper-roll-programming/" />
+
+</v-click>
+
+---
+layout: two-cols
 ---
 
-```csharp
+### Null...
+
+<v-click at="2">
+
+<ImgWithCaption image="/content/images/null-hoare-wikipedia.png" caption="https://en.wikipedia.org/wiki/Tony_Hoare" />
+
+</v-click>
+
+::right::
+
+```csharp {all|8|13-14}
 public class Data
 {
     public string Name;
@@ -284,12 +306,12 @@ public class Data
 
 public class Do
 {
-    public Data CreateData() => null;
+    public Data CreateData() => null; // <- problem 😳
 
     public string CreateAndUseData()
     {
         var data = CreateData();
-        // kein null-Check -> ist dem Compiler egal
+        // kein null-Check -> ist dem Compiler egal 😫
         return data.Name;
     }
 }
@@ -324,12 +346,15 @@ public Option<int> IntifyOption(string s)
 > Pattern matching allows you to match a value against some patterns to select a branch of the code.
 
 ```csharp
+// C#
 public string Stringify<T>(Option<T> data)
 {
-    return data.Match(
-        None: () => "",
-        Some: (existingData) => existingData.ToString()
-    );
+    // muss string zurückgeben!
+    return data
+            .Match(
+              None: () => "",                                 // <- frei wählbar
+              Some: (existingData) => existingData.ToString() // <- "happy case"
+            );
 }
 ```
 
@@ -338,7 +363,7 @@ public string Stringify<T>(Option<T> data)
 ### Vorteile
 - Explizite Semantik: Wert ist da - oder eben nicht
 - Auch für Nicht-Programmierer verständlich(er): "optional" vs. "nullable"
-- Die Signatur von Match erzwingt eine Behandlung beider Fälle - nie wieder vergessene Null-Checks!
+- Die Signatur von **Match** erzwingt eine Behandlung beider Fälle - nie wieder vergessene Null-Checks!
 - Achtung: In C# bleibt das Problem, dass "Option" auch ein Objekt ist - und daher selbst null sein kann
 
 ---
@@ -351,44 +376,62 @@ public string Stringify<T>(Option<T> data)
 
 <!-- 
 ===========================================================================================================
-LAYUMBA
+NUGET PACKAGES FOR C# (I.E. LAYUMBA)
 ===========================================================================================================
 -->
 
 ---
 
-### LaYumba
+## Recommended C# Functional Libraries
 
-<img src="/content/images/book-csharp-fp-with-comment.png" style="height: 12rem;"/>
+- LaYumba
+- CSharpFunctionalExtensions
+- Language-Ext
+
+---
+layout: two-cols
+---
+
+### Recommendation 1/3: LaYumba
 
 - NuGet Paket
 - kann nicht alles
 - Fokus: Didaktik (Ähnlichkeit mit F#, Haskell)
 - "einfache" Variante von [language-ext](https://github.com/louthy/language-ext)
 
----
+::right::
 
-<img src="/content/images/language-ext-screenshot-github-0.png" style="height: 28rem;"/>
-
----
-
-<img src="/content/images/language-ext-screenshot-github-1.png" style="height: 28rem;"/>
+<img src="/content/images/book-csharp-fp-with-comment.png"/>
 
 ---
-
-<img src="/content/images/language-ext-screenshot-github-2.png" style="height: 28rem;"/>
-
+layout: two-cols
 ---
 
-<img src="/content/images/language-ext-screenshot-github-3.png" style="height: 28rem;"/>
+### Recommendation 2/3: Language-Ext
+
+- NuGet Paket
+- sehr vollständig
+- Haskell-lastig
+
+::right::
+
+<img src="/content/images/language-ext-screenshot-github-1.png" />
+
 
 ---
-
-<img src="/content/images/language-ext-screenshot-github-4.png" style="height: 28rem;"/>
-
+layout: two-cols
 ---
 
-<img src="/content/images/language-ext-screenshot-github-5.png" style="height: 28rem;"/>
+### Recommendation 3/3: CSharpFunctionalExtensions
+
+- NuGet Paket
+- Fokus: nicht nur FP, sondern auch
+  - Domain-Driven Design
+  - Test-Driven Design
+
+::right::
+
+<img src="/content/images/csharpfunctionalextensions-blog-screenshot.png" />
 
 ---
 layout: two-cols
