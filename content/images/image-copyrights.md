@@ -3,3 +3,4 @@
 - [wikipedia-value-objects.png](https://en.wikipedia.org/wiki/Value_object) Screenshot 2019-03-30
 - [fp-languages-overview.png](Get Programming with F#, Isaac Abraham, fig. 1, page 4)
 - [addressbook1.png](https://pixabay.com/users/nolan-luna-7247884)
+- [0-vs-null-explained-using-a-toilet-paper-roll-programming.jpg](https://starecat.com/0-vs-null-explained-using-a-toilet-paper-roll-programming/)
