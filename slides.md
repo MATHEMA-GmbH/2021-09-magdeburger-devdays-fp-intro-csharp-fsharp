@@ -218,10 +218,23 @@ var avgIncomeAdults =
 </v-click>
 
 ---
+layout: two-cols
+---
 
 ### Übersicht
 
 <ImgWithCaption height="21rem" image="/content/images/fp-languages-overview.png" caption="Get Programming with F#, Isaac Abraham, Fig. 1" />
+
+::right::
+
+<v-click>
+
+ Keine Wertung! 😇
+
+- je nach Anforderung / Team kann auch eine dynamisch typisierte Sprache das Richtige sein!
+- man sollte wissen, wo auf der Graphik man sich in etwa befindet...
+  
+</v-click>
 
 ---
 
