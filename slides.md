@@ -112,15 +112,17 @@ public class Customer
 - Es macht einen Unterschied, wann oder wie oft die Funktion aufgerufen wird  
 
 ---
+layout: two-cols
+---
 
-### Syntax matters!
+### Side note: Syntax matters!
 
-Classic C#
+Classic C# (statement body)
 
 ```csharp
 int Add(int a, int b)
 {
-  return a + b;
+    return a + b;
 }
 ```
 
@@ -131,25 +133,30 @@ Expression body
 ```csharp
 int Add(int a, int b) => a + b;
 ```
----
 
-Classic C#
+::right::
 
-```csharp
+<v-click>
+
+Classic C# (statement body)
+
+```csharp {3}
 int Add(int a, int b)
 {
-  Console.WriteLine("bla"); // <- side effect!
-  return a + b;
+    Console.WriteLine("bla"); // <- side effect! 🤔
+    return a + b;
 }
 ```
 
 vs.
 
-Expression body: side effects are less likely
+Expression body: side effects are less likely (but still possible)
 
 ```csharp
 int Add(int a, int b) => a + b;
 ```
+
+</v-click>
 
 ---
 
