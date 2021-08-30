@@ -638,15 +638,20 @@ type NonEquatableNonComparable = {
 ```
 
 ---
+layout: two-cols
+---
 
 <!-- 
 ===========================================================================================================
 VALUE OBJECTS
-TODO: Patrick: Folien eindampfen
 ===========================================================================================================
 -->
 
 # Value Objects
+
+<img src="/content/images/wikipedia-value-objects.png"/>
+
+::right::
 
 Warum?
 
@@ -658,59 +663,48 @@ Warum?
 
 ### Beispiele
 
-```csharp
-// :-(
-void Einzahlen(int wert, SomeEnum waehrung) { /* ... */ }
-
-// ;-)
-void Einzahlen(Geld geld) { /* ... */ }
+```csharp {1|2|all}
+void Einzahlen(int wert, SomeEnum waehrung) { /* ... */ } // 😱
+void Einzahlen(Geld geld) { /* ... */ }                   // 😀
 ```
 
-```csharp
+<v-click>
+
+```csharp {2,4-5|9-13|all}
 class Kunde {
     int Alter { get; set; } // :-(
     
-    // ist `i` das aktuelle Alter oder das Geburtsjahr??
+    // ist `i` das aktuelle Alter oder das Geburtsjahr?? 😠
     bool IstVolljaehrig(int i) { /* ... */}
 }
 
 class Kunde {
     Alter Alter { get; set; } // ;-)
 
-    bool IstVolljaehrig(Alter alter) { /* ... */}
+    bool IstVolljaehrig(Alter alter) { /* ... */} // 👌
 
-    bool IstVolljaehrig(Geburtsjahr geburtsjahr) { /* ... */}
+    bool IstVolljaehrig(Geburtsjahr geburtsjahr) { /* ... */} // 👌
 }
 ```
 
----
-
-<img src="/content/images/wikipedia-value-objects.png" style="height: 18rem;"/>
+</v-click>
 
 ---
-
-## Value Objects
-
-- nur gültige Objekte erlaubt
-- immutable
-- equality by structure
-
+layout: two-cols
 ---
 
 ### Nur gültige Objekte
 
 Es muss bei der Erstellung gewährleistet sein, dass das Objekt gültig ist.
 
----
-
-### Nur gültige Objekte
-
 Optionen:
 
 - Konstruktor mit allen Parametern
 - statische Hilfsmethode & privater Konstruktor
 
-```csharp
+::right::
+
+```csharp {1,2,6,12,16}
 class Geld 
 {
     int Betrag { get; }
@@ -737,37 +731,21 @@ Damit ein C# Objekt unveränderlich wird, muss gewährleistet sein, dass es auch
 
 - interne Werte dürfen ausschließlich vom Konstruktor verändert werden
 - kein public oder private setter
-- kein parameterloser Konstrukor
+- kein parameterloser Konstrukor (aufpassen bei Frameworks)
 
 ---
 
-### Equality by structure
+## Ist ein Value Object gleich einem C# 9 Record?
 
-Zwei Objekte sind gleich, wenn sie die gleichen Werte haben.
+- Ein Value Object, im Domain-Driven Design Kontext, sollte Logik enthalten
+- Ein C# `record` kann im Ctor kein Validierung machen, somit nur als Datencontainer fungieren.
+  - Details dazu: https://enterprisecraftsmanship.com/posts/csharp-records-value-objects/
+- C# `record`s sind auf jeden Fall besser als Primitive Obsession!
 
----
+Nein: Ein `record` (egal ob in C# oder F#) ist nicht immer ein Ersatz fuer ein Value Object.
 
-### Exkurs: Vergleichbarkeit
+Aber: ein Schritt in die richtige Richtung.
 
-- Equality by reference
-- Equality by id
-- Equality by structure
-
----
-
-### Equality by structure
-
-Zwei Objekte sind gleich, wenn sie die gleichen Werte haben.
-
-- `Equals` und `GetHashcode` überschreiben
-
-```csharp
-override bool Equals(Geld other)
-    => other.Betrag   == this.Betrag &&
-       other.Waehrung == this.Waehrung;
-
-override int GetHashCode() { /* ... */ }
-```
 
 ---
 
