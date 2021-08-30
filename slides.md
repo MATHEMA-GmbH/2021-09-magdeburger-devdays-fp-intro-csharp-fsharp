@@ -49,7 +49,8 @@ layout: cover
 
 - **Functions as First Class Citizens**
 - Immutability
-- Pure Functions (see Immutability)
+- Pure Functions
+- Composition
 
 That's it!
 
@@ -197,10 +198,8 @@ var avgIncomeAdults =
 
 <v-clicks>
 
-- Schränken uns diese FP Paradigmen ein?
+- Schränken uns diese FP-Paradigmen ein?
 - Wie kann man mit diesem "Purismus" Software schreiben, die etwas tut?
-
-- Kleine Funktionen zu größeren verbinden
 
 - Gängige Vorgehensweise: Kleine Funktionen werden zu immer größeren Funktionalitäten zusammengesteckt
 - Problem: Nicht alle Funktionen passen gut zusammen
@@ -325,7 +324,7 @@ Bsp:
 
 ---
 
-In FP unterscheidet man die Wrapper-Klassen (zB IEnumerable) anhand der Funktionen, die sie bereitstellen
+In FP unterscheidet man die Wrapper-Klassen (z.B. IEnumerable) anhand der Funktionen, die sie bereitstellen
 
 
 <!-- 
@@ -703,7 +702,7 @@ fortgeschrittene_konzepte
 ===========================================================================================================
 -->
 
-# FP-Konzepte
+# FP-Konzepte für die Komposition von Funktionen
 
 - Functor
 - Monad
@@ -1169,59 +1168,11 @@ F# in bestehendes Projekt integrieren
 ===========================================================================================================
 -->
 
-## F# in bestehendes Projekt integrieren
+## F# - spannende Projekte
 
-### Scripting zur Automation
+- TODO: Farmer
 
-- statisch typisierte Skripte
-- .fsx Files
-- kann C# mittlerweile auch
-
----
-
-### Tests
-
-- FsUnit für lesbarere Tests
-<img src="/content/resources/FsUnit.png" style="height: 18rem;"/>
-
----
-
-- FsCheck für Property Based Testing
-<img src="/content/resources/FsCheck.png" style="height: 18rem;"/>
-
----
-
-- Unquote für besseren "Callstack" bei fehlschlagenden Tests
-<img src="/content/resources/Unquote.png" style="height: 18rem;"/>
-
----
-
-- für Mocks: Object Expressions für direkte Interface-Implementierung, Foq, mountebank mit F# Binding
-  <img src="/content/resources/mountebank.png" style="height: 18rem;"/>
-
----
-
-- Browser-Fernsteuerung mit canopy
-  <img src="/content/resources/canopy.png" style="height: 18rem;"/>
-
----
-
-- BDD-Tests mit TickSpec
-  <img src="/content/resources/TickSpec.png" style="height: 18rem;"/>
-
----
-
-### Builds
-
-- FAKE als erweiterbare DSL für Build-Tasks
-  <img src="/content/resources/FAKE.png" style="height: 18rem;"/>
-  
-- Paket als Alternative zu Nuget
-  <img src="/content/resources/Paket.png" style="height: 18rem;"/>
- 
----
-
-## Weitere Nutzungsmöglichkeiten
+--- 
 
 - Webseiten mit Fable
   <img src="/content/resources/Fable.png" style="height: 18rem;"/>
