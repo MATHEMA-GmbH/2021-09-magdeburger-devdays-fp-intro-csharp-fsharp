@@ -56,8 +56,25 @@ That's it!
 
 ---
 
-### Immutability in C# #
+### 1st class functions in C# #
 
+```csharp
+// Func as parameter
+public string Greet(Func<string, string> greeterFunction, string name)
+{
+  return greeterFunction(name);
+}
+```
+
+```csharp
+Func<string, string> formatGreeting = (name) => $"Hello, {name}";
+var greetingMessage = Greet(formatGreeting, "MD Dev Days");
+// -> greetingMessage: "Hello, MD Dev Days"
+```
+
+---
+
+### Immutability in C# #
 
 ```csharp
 public class Customer
@@ -79,6 +96,13 @@ public class Customer
   public string Name { get; } // <- immutable
 }
 ```
+
+---
+
+#### Pure Functions in C# #
+
+- haben niemals Seiteneffekte!
+- sollten immer nach `static` umwandelbar sein
 
 ---
 
@@ -120,29 +144,20 @@ int Add(int a, int b) => a + b;
 
 ---
 
-### 1st class functions in C# #
+### Composition
 
-
-```csharp
-// Func as parameter
-public string Greet(Func<string, string> greeterFunction, string name)
-{
-  return greeterFunction(name);
-}
-```
-
-```csharp
-Func<string, string> formatGreeting = (name) => $"Hello, {name}";
-var greetingMessage = Greet(formatGreeting, "MD Dev Days");
-// -> greetingMessage: "Hello, MD Dev Days"
-```
+- Kleine Funktionen zu großer Funktionalität zusammenstecken
+- Bewusste Aufteilung des Codes in Daten, Pure Funktionen und Funktionen mit Seiteneffekten
+- Problem: Nicht alle Funktionen passen in Sachen Parameter und Rückgabewert zusammen
 
 ---
 
-#### Pure Functions in C# #
+## Vorteile von FP
+- Pure Funktionen sind leichter testbar
+- Kleine Funktionen sind leichter zu erfassen
+- Komposition führt zu besserer Wandelbarkeit und Erweiterbarkeit 
 
-- haben niemals Seiteneffekte!
-- sollten immer nach `static` umwandelbar sein
+- TODO: Beispiel/Vergleich C# vs. F# Pipe
 
 ---
 layout: two-cols
@@ -201,8 +216,6 @@ var avgIncomeAdults =
 - Schränken uns diese FP-Paradigmen ein?
 - Wie kann man mit diesem "Purismus" Software schreiben, die etwas tut?
 
-- Gängige Vorgehensweise: Kleine Funktionen werden zu immer größeren Funktionalitäten zusammengesteckt
-- Problem: Nicht alle Funktionen passen gut zusammen
 
 </v-clicks>
 
@@ -214,8 +227,9 @@ OPTION
 ===========================================================================================================
 -->
 
-## Vorhandensein eines Werts
-#### oder: null muss weg.
+## Nützliche Datentypen
+
+### Vorhandensein eines Werts
 
 <v-click at="1">
 
@@ -314,17 +328,12 @@ public string Stringify<T>(Option<T> data)
 
 ## LINQ - für Listen (IEnumerable in C#)
 
-Allg.: Funktionen, die auf eine Liste angewendet werden
-
-Bsp:
-
-- Option ist eigentlich nur eine Liste mit 2 Werten (Some und None)
-- Result -> Liste mit 2 Werten (Left und Right)
-- etc.
+- Allg.: Funktionen, die auf eine Liste angewendet werden
+- Deklarativ
 
 ---
 
-In FP unterscheidet man die Wrapper-Klassen (z.B. IEnumerable) anhand der Funktionen, die sie bereitstellen
+In FP kategorisiert man die Wrapper-Klassen (z.B. IEnumerable) anhand der Funktionen, die sie bereitstellen
 
 
 <!-- 
@@ -486,9 +495,9 @@ type Vehicle = | Bike | Car | Bus
 // Pattern Matching zur Behandlung der verschiedenen Fälle
 let vehicle = Bike
 match vehicle with
-| Bike -> "Ima ridin my bike"
-| Car -> "Driving along in my automobile"
-| Bus -> "SPEED"
+| Bike -> "Riding a bike"
+| Car -> "Driving an automobile"
+| Bus -> "Going by bus"
 
 ```
 
@@ -728,7 +737,7 @@ module X
 
 let toUpper (s : string) = s.ToUpper()
 
-let stringToOption s =
+let stringToOption (s : string) : string option =
     if String.IsNullOrWhiteSpace s then
         None
     else
@@ -737,7 +746,8 @@ let stringToOption s =
 let nonEmptyStringToUpper s =
     let nonEmpty = stringToOption s
     // passt nicht: 
-    // "string" erwartet, aber "string option" bekommen
+    // toUpper erwartet "string", bekommt "string option"
+    // Häufig bei .NET Framework Funktionen
     let nonEmptyUpper = toUpper nonEmpty
 ```
 
@@ -791,7 +801,7 @@ static class X
 
 ### Lösung: Wert in Container mit "map" auspacken
 
-```fsharp
+```fsharp {all|12-13}
 // F#
 let toUpper (s : string) = s.ToUpper()
 
@@ -804,6 +814,7 @@ let stringToOption s =
 let nonEmptyStringToUpper s =
     let nonEmpty = stringToOption s
     let nonEmptyUpper = Option.map toUpper nonEmpty
+    // nonEmptyUpper ist wieder "string option", obwohl toUpper "string" als Rückgabetyp hat
 ```
 
 ---
@@ -816,25 +827,25 @@ MONADE
 
 ### Problem: Verkettung eingepackter Werte
 ```fsharp
-let storeInDatabase path content = 
+// TODO: Ist das überhaupt gültiger F# Code?
+let isNotEmpty (s : string) : string option =
+    if String.IsNullOrWhiteSpace s then None else Some s
+
+let toInt (input : string) : int option = 
   try
-    System.IO.File.WriteAllText(path, content)
-    Some content
+    let parsed = System.Int32.Parse(input)
+    Some parsed
   with
     ex -> None
 
-let stringToOption s =
-    if String.IsNullOrWhiteSpace s then None else Some s
+let double (num : int) : int = num * 2
 
-let toUpper (s : string) = s.ToUpper()
-
-let nonEmptyStringStoreInPersistenceAndToUpper path content =
-    let nonEmpty = stringToOption content
-    // passt nicht: "string" erwartet, aber "string option" bekommen
-    let stored = storeInDatabase path nonEmpty
-    // passt nicht: "string option" erwartet, 
-    // aber "string option option" bekommen
-    let nonEmptyUpper = Option.map toUpper stored
+let parseAndDouble input =
+    let nonEmpty = isNotEmpty input
+    let parsedInt = Option.map toInt nonEmpty
+    // passt nicht: "int option" erwartet, 
+    // aber "int option option" bekommen
+    let doubled = Option.map double parsedInt
 ```
 
 ---
@@ -857,23 +868,31 @@ let nonEmptyStringStoreInPersistenceAndToUpper path content =
 ---
 
 ## Verkettung
-```fsharp
-let storeInDatabase path content = 
+```fsharp {all|16}
+// TODO: Ist das überhaupt gültiger F# Code?
+let isNotEmpty (s : string) : string option =
+    if String.IsNullOrWhiteSpace s then None else Some s
+
+let toInt (input : string) : int option = 
   try
-    System.IO.File.WriteAllText(path, content)
-    Some content
+    let parsed = System.Int32.Parse(input)
+    Some parsed
   with
     ex -> None
 
-let stringToOption s =
-    if String.IsNullOrWhiteSpace s then None else Some s
+let double (num : int) : int = num * 2
 
-let toUpper (s : string) = s.ToUpper()
+let parseAndDouble input =
+    let nonEmpty = isNotEmpty input // nonEmpty ist "string option"
+    let parsedInt = Option.bind toInt nonEmpty // parsedInt ist jetzt "int option"
+    let doubled = Option.map double parsedInt // doubled ist "int option"
 
-let nonEmptyStringStoreInPersistenceAndToUpper path content =
-    let nonEmpty = stringToOption content
-    let stored = Option.bind (storeInDatabase path) nonEmpty
-    let nonEmptyUpper = Option.map toUpper stored
+    // TODO: Ist das elegant, oder eher abschreckend? Ich glaube eher letzteres...
+    // Kurzschreibweise mit Pipeline- und Infix-Operatoren:
+    // input 
+    // |> isNotEmpty 
+    // >>= toInt 
+    // <!> double
 ```
 
 ---
@@ -884,7 +903,7 @@ RAILWAY
 ===========================================================================================================
 -->
 
-## Railway Oriented Programming
+## Elegante Fehlerbehandlung mit Railway Oriented Programming
 
 Funktionale Programmierung wird oft als das "Zusammenstöpseln" von Funktionen dargestellt...
 
@@ -946,11 +965,11 @@ Problem: Keine standardisierte Strategie für Fehlerbehandlung
 
 ---
 
-#### Result/Either
+#### Result
 
 - kann entweder 
-  - das Ergebnis beinhalten, oder 
-  - einen Fehlerfall
+  - das Ergebnis beinhalten (Success)  
+  - oder einen Fehlerfall (Failure)
 
 ---
 
@@ -984,30 +1003,6 @@ Problem: Keine standardisierte Strategie für Fehlerbehandlung
 
 ---
 
-
-```haskell
-bind: (string -> Result int) -> Result string -> Result int
-
-bind: (a -> M b) -> M a -> M b
-```
-
-- FP-Jargon: eine Wrapper-Klasse, die `bind` bereitstellt, wird **Monade** genannt (sehr stark vereinfacht!).
-
-Note:
-Beispiel: siehe `ChainingOptions.Chaining_option_returning_functions`.
-
-
----
-
-- `Either` besteht aus 2 Teilen
-  - `Left`
-  - `Right` ("richtig"...)
-- `Result` besteht aus 2 Teilen
-  - `Failure`
-  - `Success`
-
----
-
 - `Option` hat `Some(T)` und `None`
 
 ```csharp
@@ -1017,8 +1012,9 @@ Option<string> IsValidOpt(string s) =>
         : Some(s);
 ```
 
-- `Either`/`Result` ist ähnlich zu `Option`
-- `None` wird durch `Failure`/`Left` ersetzt (frei wählbar, z.B. selbst definierter Error Typ).
+- `Result` ist ähnlich zu `Option`
+- `None` wird durch `Failure` ersetzt (frei wählbar, z.B. selbst definierter Error Typ)
+- In manchen Sprachen bzw. Bibliotheken heißt der Datentyp allgemeiner gefasst `Either` 
 
 ```csharp
 Either<string, string> IsValidEither(string s)
@@ -1026,8 +1022,6 @@ Either<string, string> IsValidEither(string s)
         ? (Either<string, string>) Left("ups")
         : Right(s);
 ```
-
-
 
 ---
 
@@ -1037,6 +1031,8 @@ APPLICATIVE
 ===========================================================================================================
 -->
 ### Problem: Funktion mit mehreren eingepackten Parametern
+
+Häufiger Anwendungsfall: Validierung von Eingabedaten, Aufruf des Workflows nur, wenn alle Daten korrekt sind.
 
 ```fsharp
 let add a b = a + b
@@ -1102,6 +1098,9 @@ let addNumbers a b c =
     let (sum' : (int -> int -> int) option) = Option.map sum positiveA
     let (sum'' : (int -> int) option) = Option.apply sum' positiveB
     let (sum''' : (int) option) = Option.apply sum'' positiveC
+
+    // Kurzschreibweise mit Infix-Operatoren
+    // sum <!> positiveA <*> positiveB <*> positiveC
 ```
 
 ---
@@ -1132,6 +1131,12 @@ AddNumbers(-1, -2, -3); // --> [
 ```
 
 ---
+
+## Zusammenfassung Komposition
+
+- Mit Funktor, Monade, Applicative können Funktionen zu größeren Funktionalitäten komponiert werden, die auf den ersten Blick "nicht zusammenpassen".
+- Funktor, Monade, Applicative sind dabei Eigenschaften des Datentyps ("implementiert dieser die entsprechende Funktion - also map, bind, apply").
+- Jeder Datentyp, der die Funktion implementiert, kann "austauschbar" verwendet werden!
 
 <!-- 
 ===========================================================================================================
