@@ -742,10 +742,13 @@ Damit ein C# Objekt unveränderlich wird, muss gewährleistet sein, dass es auch
   - Details dazu: https://enterprisecraftsmanship.com/posts/csharp-records-value-objects/
 - C# `record`s sind auf jeden Fall besser als Primitive Obsession!
 
+---
+
+## Ist ein Value Object gleich einem C# 9 Record?
+
 Nein: Ein `record` (egal ob in C# oder F#) ist nicht immer ein Ersatz fuer ein Value Object.
 
 Aber: ein Schritt in die richtige Richtung.
-
 
 ---
 
@@ -843,7 +846,7 @@ static class X
 
 ### Lösung: Wert in Container mit "map" auspacken, Funktion anwenden, einpacken
 
-```fsharp {all|12-13}
+```fsharp {all|12-15}
 // F#
 let toUpper (s : string) = s.ToUpper()
 
@@ -912,7 +915,7 @@ let parseAndDouble input =
 ---
 
 ## Verkettung
-```fsharp {all|16}
+```fsharp {all|15-18}
 let isNotEmpty (s : string) : string option =
     if String.IsNullOrWhiteSpace s then None else Some s
 
