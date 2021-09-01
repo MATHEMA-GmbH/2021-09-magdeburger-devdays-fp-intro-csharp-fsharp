@@ -852,10 +852,35 @@ static class X
 </v-click>
 
 ---
+layout: two-cols
+---
 
 ### Funktor ("Mappable")
 
-<img src="/content/resources/Funktor_1.png" style="height: 18rem;"/>
+<!-- <img src="/content/resources/Funktor_1.png" style="height: 18rem;"/> -->
+<img src="/content/resources/Funktor_1.png" />
+
+::right::
+
+```csharp
+// tranformierende Funktion
+let int2string (i:int) : string = i.ToString()
+
+
+
+// Wert im Container
+let optionalInt = Some 42
+
+// map Funktion
+let map f optInt =
+  match optInt with
+  | Some i -> f(i) |> Some
+  | None -> None
+
+// Anwendung
+(Some 42) |> map int2string // -> Some "42"
+None |> map int2string      // -> None
+```
 
 ---
 
