@@ -742,10 +742,13 @@ Damit ein C# Objekt unveränderlich wird, muss gewährleistet sein, dass es auch
   - Details dazu: https://enterprisecraftsmanship.com/posts/csharp-records-value-objects/
 - C# `record`s sind auf jeden Fall besser als Primitive Obsession!
 
+---
+
+## Ist ein Value Object gleich einem C# 9 Record?
+
 Nein: Ein `record` (egal ob in C# oder F#) ist nicht immer ein Ersatz fuer ein Value Object.
 
 Aber: ein Schritt in die richtige Richtung.
-
 
 ---
 
@@ -843,7 +846,7 @@ static class X
 
 ### Lösung: Wert in Container mit "map" auspacken, Funktion anwenden, einpacken
 
-```fsharp {all|12-13}
+```fsharp {all|12-15}
 // F#
 let toUpper (s : string) = s.ToUpper()
 
@@ -912,7 +915,7 @@ let parseAndDouble input =
 ---
 
 ## Verkettung
-```fsharp {all|16}
+```fsharp {all|15-18}
 let isNotEmpty (s : string) : string option =
     if String.IsNullOrWhiteSpace s then None else Some s
 
@@ -1242,5 +1245,65 @@ F# in bestehendes Projekt integrieren
   <img src="/content/resources/SAFE.png" style="height: 18rem;"/>
 
 ---
+layout: two-cols
+---
 
-TODO: Danke/Kontakt Folie
+# MD DevDays
+
+<div style="display: flex; flex-direction: column; ">
+  <span style="display: block; text-align: center; margin-bottom: 1rem;">Patrick Drechsler</span>
+  <img src="/content/resources/patrick_drechsler_bearbeitet_400x600.jpg" style="object-fit: contain; height: 8rem;" alt="Patrick Drechsler Porträt"/>
+</div>
+
+<table class="contact-table">
+  <thead></thead>
+  <tbody>
+    <tr>
+      <td>E-Mail</td>
+      <td><a href="mailto:patrick.drechsler@mathema.de">patrick.drechsler@mathema.de</a></td>
+    </tr>
+      <tr>
+      <td>Twitter</td>
+      <td><a href="https://twitter.com/drechsler">@drechsler</a></td>
+    </tr>
+      <tr>
+      <td>Github</td>
+      <td><a href="https://github.com/draptik">https://github.com/draptik</a></td>
+    </tr>
+      <tr>
+      <td>Blog</td>
+      <td><a href="https://draptik.github.io/">https://draptik.github.io/</a></td>
+    </tr>
+  </tbody>
+</table>
+
+::right::
+
+# Danke
+
+<div style="display: flex; flex-direction: column; ">
+  <span style="display: block; text-align: center; margin-bottom: 1rem;">Martin Grotz</span>
+  <img src="/content/resources/martin_grotz_bearbeitet_400x600.jpg" style="object-fit: contain; height: 8rem;" alt="Martin Grotz Porträt"/>
+</div>
+
+<table class="contact-table">
+  <thead></thead>
+  <tbody>
+    <tr>
+      <td>E-Mail</td>
+      <td><a href="mailto:patrick.drechsler@mathema.de">martin.grotz@mathema.de</a></td>
+    </tr>
+      <tr>
+      <td>Twitter</td>
+      <td><a href="https://twitter.com/mobilgroma">@mobilgroma</a></td>
+    </tr>
+      <tr>
+      <td>Github</td>
+      <td><a href="https://github.com/groma84">https://github.com/groma84</a></td>
+    </tr>
+      <tr>
+      <td>Blog</td>
+      <td><a href="https://elm.finde-ich-super.de/">https://elm.finde-ich-super.de/</a></td>
+    </tr>
+  </tbody>
+</table>

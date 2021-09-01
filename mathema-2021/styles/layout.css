@@ -55,6 +55,10 @@
     font-size: 1.7rem;
     font-weight: bold;
   }
+
+  .contact-table {
+    font-size: 0.8rem;
+  }
 }
 
 .slidev-layout.cover {
