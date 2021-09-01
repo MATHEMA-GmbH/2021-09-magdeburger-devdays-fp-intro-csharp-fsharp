@@ -109,7 +109,7 @@ public class Customer
 ### Seiteneffekte
 - Implizite Parameter
 - Auswirkungen nach außen von innerhalb der Funktion
-- Es macht einen Unterschied, wann oder wie oft die Funktion aufgerufen wird  
+- Es macht einen Unterschied, wann oder wie oft die Funktion aufgerufen wird ("nicht idempotent") 
 
 ---
 layout: two-cols
@@ -288,7 +288,7 @@ public int Intify(string s)
 layout: two-cols
 ---
 
-### Null...
+### Null: The billion dollar mistake
 
 <v-click at="2">
 
@@ -384,9 +384,9 @@ NUGET PACKAGES FOR C# (I.E. LAYUMBA)
 
 ## Recommended C# Functional Libraries
 
-- LaYumba
-- CSharpFunctionalExtensions
-- Language-Ext
+- **LaYumba** https://github.com/la-yumba/functional-csharp-code
+- **CSharpFunctionalExtensions** https://github.com/vkhorikov/CSharpFunctionalExtensions
+- **Language-Ext** https://github.com/louthy/language-ext
 
 ---
 layout: two-cols
@@ -622,7 +622,7 @@ let thing2 = {content = "abc"; id = 15}
 let equal = (thing1 = thing2) // true
 ```
 
-- Record Types mit Structural Equality sind ideal, um sehr kompakt "Value Objects" ausdrücken zu können
+- Record Types mit Structural Equality sind ideal, um sehr kompakt "Value Objects" auszudrücken
 
 ---
 
@@ -672,14 +672,14 @@ void Einzahlen(Geld geld) { /* ... */ }                   // 😀
 
 ```csharp {2,4-5|9-13|all}
 class Kunde {
-    int Alter { get; set; } // :-(
+    int Alter { get; set; } // 😠
     
     // ist `i` das aktuelle Alter oder das Geburtsjahr?? 😠
     bool IstVolljaehrig(int i) { /* ... */}
 }
 
 class Kunde {
-    Alter Alter { get; set; } // ;-)
+    Alter Alter { get; set; } // 👌
 
     bool IstVolljaehrig(Alter alter) { /* ... */} // 👌
 
@@ -693,7 +693,7 @@ class Kunde {
 layout: two-cols
 ---
 
-### Nur gültige Objekte
+### Value Objects: Nur gültige Objekte möglich
 
 Es muss bei der Erstellung gewährleistet sein, dass das Objekt gültig ist.
 
@@ -701,12 +701,32 @@ Optionen:
 
 - Konstruktor mit allen Parametern
 - statische Hilfsmethode & privater Konstruktor
+- C# 9: Property mit `init`
+
+<v-click at="2">
+
+```csharp
+public class Money {
+  private Money(int betrag, Waehrung waehrung) {
+      Betrag = betrag;
+      Waehrung = waehrung;
+  }
+
+  public static Maybe<Money> Create(int betrag, 
+      Waehrung waehrung) =>
+       IsValid(betrag, Waehrung)
+        ? Some(new Money(betrag, waehrung))
+        : None
+  //...
+}
+```
+
+</v-click>
 
 ::right::
 
-```csharp {1,2,6,12,16}
-class Geld 
-{
+```csharp {1,5,6,7,11,13|none}
+class Geld {
     int Betrag { get; }
     Waehrung Waehrung { get; }
 
@@ -723,11 +743,12 @@ class Geld
 }
 ```
 
+
 ---
 
-### Immutability
+### Value Objects: Immutability
 
-Damit ein C# Objekt unveränderlich wird, muss gewährleistet sein, dass es auch **nach Erstellung nicht verändert wird**.
+Damit ein C# Objekt unveränderlich bleibt, muss gewährleistet sein, dass es auch **nach Erstellung nicht verändert wird**.
 
 - interne Werte dürfen ausschließlich vom Konstruktor verändert werden
 - kein public oder private setter
@@ -737,16 +758,20 @@ Damit ein C# Objekt unveränderlich wird, muss gewährleistet sein, dass es auch
 
 ## Ist ein Value Object gleich einem C# 9 Record?
 
+<v-clicks>
+
 - Ein Value Object, im Domain-Driven Design Kontext, sollte Logik enthalten
-- Ein C# `record` kann im Ctor kein Validierung machen, somit nur als Datencontainer fungieren.
+- Ein C# **record** kann im Ctor kein Validierung machen, und kann somit nur als Datencontainer fungieren.
   - Details dazu: https://enterprisecraftsmanship.com/posts/csharp-records-value-objects/
-- C# `record`s sind auf jeden Fall besser als Primitive Obsession!
+- C# **records** sind auf jeden Fall besser als Primitive Obsession!
+
+</v-clicks>
 
 ---
 
 ## Ist ein Value Object gleich einem C# 9 Record?
 
-Nein: Ein `record` (egal ob in C# oder F#) ist nicht immer ein Ersatz fuer ein Value Object.
+Nein: Ein **record** (egal ob in C# oder F#) ist nicht immer ein Ersatz für ein Value Object.
 
 Aber: ein Schritt in die richtige Richtung.
 
