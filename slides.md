@@ -246,7 +246,7 @@ OPTION
 ===========================================================================================================
 -->
 
-## Nützliche Datentypen
+## Nützlicher Datentyp
 
 ### Vorhandensein eines Werts
 
@@ -319,11 +319,13 @@ public class Do
 
 ---
 
-## Option
+## Nützlicher Datentyp: Option
+
 ```
 // Pseudocode
 type Option<T> = Some<T> | None
 ```
+
 - entweder ein Wert ist da - dann ist er in "Some" eingepackt
 - oder es ist kein Wert da, dann gibt es ein leeres "None"
 - alternative Bezeichnungen: Optional, Maybe
@@ -331,6 +333,7 @@ type Option<T> = Some<T> | None
 ---
 
 ## Mit Option
+
 ```csharp
 public Option<int> IntifyOption(string s)
 {
@@ -343,6 +346,7 @@ public Option<int> IntifyOption(string s)
 ---
 
 ### Wie komme ich an einen eingepackten Wert ran?
+
 > Pattern matching allows you to match a value against some patterns to select a branch of the code.
 
 ```csharp
@@ -361,18 +365,11 @@ public string Stringify<T>(Option<T> data)
 ---
 
 ### Vorteile
+
 - Explizite Semantik: Wert ist da - oder eben nicht
 - Auch für Nicht-Programmierer verständlich(er): "optional" vs. "nullable"
 - Die Signatur von **Match** erzwingt eine Behandlung beider Fälle - nie wieder vergessene Null-Checks!
 - Achtung: In C# bleibt das Problem, dass "Option" auch ein Objekt ist - und daher selbst null sein kann
-
----
-
-## LINQ - für Listen (IEnumerable in C#)
-
-- Allg.: Funktionen, die auf eine Liste angewendet werden
-- Deklarativ
-
 
 <!-- 
 ===========================================================================================================
@@ -997,61 +994,15 @@ RAILWAY
 
 ## Exkurs: Elegante Fehlerbehandlung mit Railway Oriented Programming
 
-Funktionale Programmierung wird oft als das "Zusammenstöpseln" von Funktionen dargestellt...
-
----
-
-Beispiel:
-
-```
-f1: Eingabe string, Ausgabe int
-f2: Eingabe int, Ausgabe bool
-
-FP: Komposition von f1 und f2
-f3: Eingabe string, Ausgabe bool
-```
-
-```
-// FP Syntax
-f1: string -> int
-f2: int -> bool
-f3: string -> bool
-```
-
----
+Problem: Keine standardisierte Strategie für Fehlerbehandlung 
 
 ```csharp
-// Klassisch ===========================================================
-int F1(string s) => int.TryParse(s, out var i) ? i : 0;
-bool F2(int i) => i > 0;
 
-// "verschachtelter" Aufruf
-F2(F1("1")) // -> true
-F2(F1("0")) // -> false
-
-// "composition"
-bool F3(string s) => F2(F1(s));
-```
-
-```csharp
-// Method Chaining =====================================================
-// mit C# extension methods
-static int F1(this string s) => int.TryParse(s, out var i) ? i : 0;
-static bool F2(this int i) => i > 0;
-
-// Lesbarer (erst F1, dann F2)
-"1".F1().F2() // ->true
-"0".F1().F2() // ->false
-
-// Lesbarer (erst F1, dann F2)
-bool F3(string s) => s.F1().F2();
 ```
 
 ---
 
-- Problem: Keine standardisierte Strategie für Fehlerbehandlung 
 - Wenn wir davon ausgehen, dass Funktionen auch einen Fehlerfall haben, benötigen wir einen **neuen Datentyp**, der das abbilden kann
-
 
 <v-click>
 
