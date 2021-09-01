@@ -5,4 +5,5 @@
 - [addressbook1.png](https://pixabay.com/users/nolan-luna-7247884)
 - [0-vs-null-explained-using-a-toilet-paper-roll-programming.jpg](https://starecat.com/0-vs-null-explained-using-a-toilet-paper-roll-programming/)
 - [null-hoare-wikipedia.png](https://en.wikipedia.org/wiki/Tony_Hoare#Apologies_and_retractions)
+- [0-vs-null.jpg](https://www.reddit.com/r/ProgrammerHumor/comments/6f68rv/difference_between_0_and_null/)
 - [csharpfunctionalextensions-blog-screenshot.png](https://enterprisecraftsmanship.com/posts/functional-c-non-nullable-reference-types/)

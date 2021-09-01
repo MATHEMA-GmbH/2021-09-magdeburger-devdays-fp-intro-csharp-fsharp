@@ -280,7 +280,7 @@ public int Intify(string s)
 
 <v-click at="1">
 
-<ImgWithCaption height="21rem" image="/content/images/0-vs-null-explained-using-a-toilet-paper-roll-programming.jpg" caption="https://starecat.com/0-vs-null-explained-using-a-toilet-paper-roll-programming/" />
+<ImgWithCaption height="21rem" image="/content/images/0-vs-null.jpg" caption="https://www.reddit.com/r/ProgrammerHumor/comments/6f68rv/difference_between_0_and_null/" />
 
 </v-click>
 
