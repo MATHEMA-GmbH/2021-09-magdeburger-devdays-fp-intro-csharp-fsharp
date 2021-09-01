@@ -1207,7 +1207,7 @@ let addNumbers a b c =
 ### Funktion mit mehreren Parametern
 
 ```csharp
-// C#
+// C# (mit LaYumba Bibliothek)
 Func<int, int, int, int> sum = (a, b, c) => a + b + c;
 
 Func<int, Validation<int>> onlyPositive = i
@@ -1221,6 +1221,7 @@ Validation<int> AddNumbers(int a, int b, int c) {
         .Apply(onlyPositive(b))    // returns int -> int
         .Apply(onlyPositive(c));   // returns int
 
+// Usage example
 AddNumbers(1, 2, 3);    // --> Valid(6)
 AddNumbers(-1, -2, -3); // --> [
                         // Error("Number -1 is not positive"),
@@ -1233,9 +1234,13 @@ AddNumbers(-1, -2, -3); // --> [
 
 ## Zusammenfassung Komposition
 
+<v-clicks>
+
 - Mit Funktor, Monade, Applicative können Funktionen zu größeren Funktionalitäten komponiert werden, die auf den ersten Blick "nicht zusammenpassen".
-- Funktor, Monade, Applicative sind dabei Eigenschaften des Datentyps ("implementiert dieser die entsprechende Funktion - also map, bind, apply").
+- Funktor, Monade, Applicative sind dabei **Eigenschaften des Datentyps** ("implementiert dieser die entsprechende Funktion - also map, bind, apply").
 - Jeder Datentyp, der die Funktion implementiert, kann "austauschbar" verwendet werden!
+
+</v-clicks>
 
 ---
 
