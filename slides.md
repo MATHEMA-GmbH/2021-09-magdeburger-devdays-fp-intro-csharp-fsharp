@@ -1265,11 +1265,21 @@ VERANSTALTUNGEN
 <img src="/content/resources/LambdaLounge.png" style="height: 18rem;"/>
 
 ---
+layout: two-cols
+---
 
 #### Softwerkskammer
 
-[https://www.softwerkskammer.org/groups/nuernberg](https://www.softwerkskammer.org/groups/nuernberg)
+[https://www.softwerkskammer.org](https://www.softwerkskammer.org)
 <img src="/content/resources/Softwerkskammer.png" style="height: 18rem;"/>
+
+::right::
+
+Seit 2021:
+
+- via Meetup.com
+- via Slack
+- Links auf der Seite [https://www.softwerkskammer.org](https://www.softwerkskammer.org)
 
 ---
 
@@ -1286,15 +1296,21 @@ F# in bestehendes Projekt integrieren
 
 --- 
 
+## F# - spannende Projekte
+
 - Webseiten mit [Fable](https://fable.io/)
   <img src="/content/resources/Fable.png" style="height: 18rem;"/>
 
 ---
 
+## F# - spannende Projekte
+
 - Mobile Apps mit [Fabulous](https://fsprojects.github.io/Fabulous/)
   <img src="/content/resources/Fabulous.png" style="height: 18rem;"/>
 
 ---
+
+## F# - spannende Projekte
 
 - Full-Stack-Webanwendungen mit dem [SAFE-Stack](https://safe-stack.github.io/)
   <img src="/content/resources/SAFE.png" style="height: 18rem;"/>
