@@ -862,7 +862,7 @@ layout: two-cols
 
 ::right::
 
-```csharp
+```fsharp
 // tranformierende Funktion
 let int2string (i:int) : string = i.ToString()
 
