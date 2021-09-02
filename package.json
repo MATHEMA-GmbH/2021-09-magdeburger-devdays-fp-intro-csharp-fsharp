@@ -2,13 +2,17 @@
   "private": true,
   "scripts": {
     "dev": "slidev --open",
-    "build": "slidev build",
-    "export": "slidev export"
+    "build": "slidev build --base /2021-09-magdeburger-devdays-fp-intro-csharp-fsharp/",
+    "export": "slidev export",
+    "gh-pages": "gh-pages -d dist"
   },
   "dependencies": {
     "@slidev/cli": "^0.22.7",
     "@slidev/theme-default": "*",
     "@slidev/theme-seriph": "*"
   },
-  "name": "fp-intro"
+  "name": "fp-intro",
+  "devDependencies": {
+    "gh-pages": "^3.2.3"
+  }
 }

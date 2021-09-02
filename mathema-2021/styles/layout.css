@@ -10,7 +10,7 @@
 .slidev-layout {
   h1,
   h2 {
-    background-image: url(./img/mat-pictogram-rgb.png);
+    background-image: url(/img/mat-pictogram-rgb.png);
     background-repeat: no-repeat;
     background-size: 50px;
     background-position-y: center;

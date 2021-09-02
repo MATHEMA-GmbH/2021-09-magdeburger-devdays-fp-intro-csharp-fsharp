@@ -37,7 +37,6 @@ layout: cover
 
 ---
 
-
 <!-- 
 ===========================================================================================================
 02-FP-BASICS
@@ -223,7 +222,7 @@ layout: two-cols
 
 ### Übersicht
 
-<ImgWithCaption height="21rem" image="/content/images/fp-languages-overview.png" caption="Get Programming with F#, Isaac Abraham, Fig. 1" />
+<img src="/content/images/fp-languages-overview.png" style="height: 21rem;" />
 
 ::right::
 
@@ -280,7 +279,7 @@ public int Intify(string s)
 
 <v-click at="1">
 
-<ImgWithCaption height="21rem" image="/content/images/0-vs-null.jpg" caption="https://www.reddit.com/r/ProgrammerHumor/comments/6f68rv/difference_between_0_and_null/" />
+<img src="/content/images/0-vs-null.jpg" style="height: 21rem;" />
 
 </v-click>
 
@@ -292,7 +291,7 @@ layout: two-cols
 
 <v-click at="2">
 
-<ImgWithCaption image="/content/images/null-hoare-wikipedia.png" caption="https://en.wikipedia.org/wiki/Tony_Hoare" />
+<img src="/content/images/null-hoare-wikipedia.png" style="height: 21rem;" />
 
 </v-click>
 
