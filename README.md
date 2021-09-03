@@ -12,7 +12,7 @@ Learn more about Slidev on [documentations](https://sli.dev/).
 
 ## GH-Pages
 
-Slides can be viewed online at visit https://mathema-gmbh.github.io/2021-09-magdeburger-devdays-fp-intro-csharp-fsharp/
+Slides can be viewed online at https://mathema-gmbh.github.io/2021-09-magdeburger-devdays-fp-intro-csharp-fsharp/
 
 ### Creating / updating gh-pages
 
