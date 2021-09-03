@@ -1180,7 +1180,7 @@ AddNumbers(-1, -2, -3); // --> [
 
 <v-clicks>
 
-- Mit Funktor, Monade, Applicative können Funktionen zu größeren Funktionalitäten komponiert werden, die auf den ersten Blick "nicht zusammenpassen".
+- Mit Funktor, Monade, Applicative können Funktionen, die auf den ersten Blick "nicht zusammenpassen", trotzdem zu größeren Funktionalitäten komponiert werden.
 - Funktor, Monade, Applicative sind dabei **Eigenschaften des Datentyps** ("implementiert dieser die entsprechende Funktion - also map, bind, apply").
 - Jeder Datentyp, der die Funktion implementiert, kann "austauschbar" verwendet werden!
 
