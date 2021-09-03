@@ -1324,3 +1324,10 @@ layout: two-cols
     </tr>
   </tbody>
 </table>
+
+---
+
+### Folien
+
+<img src="/content/images/qr-code.png" alt="qr-code" />
+https://mathema-gmbh.github.io/2021-09-magdeburger-devdays-fp-intro-csharp-fsharp/
