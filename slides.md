@@ -1187,6 +1187,9 @@ AddNumbers(-1, -2, -3); // --> [
 </v-clicks>
 
 ---
+layout: image-right
+image: "/content/resources/BusConf.png"
+---
 
 <!-- 
 ===========================================================================================================
@@ -1199,7 +1202,6 @@ VERANSTALTUNGEN
 #### BusConf
 
 [https://www.bus-conf.org/](https://www.bus-conf.org/)
-<img src="/content/resources/BusConf.png" style="height: 18rem;"/>
 
 ---
 
