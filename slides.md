@@ -223,6 +223,7 @@ layout: two-cols
 ### Übersicht
 
 <img src="/content/images/fp-languages-overview.png" style="height: 21rem;" />
+<div class="caption">"Get Programming with F#", Isaac Abraham, Fig. 1</div>
 
 ::right::
 
@@ -280,6 +281,7 @@ public int Intify(string s)
 <v-click at="1">
 
 <img src="/content/images/0-vs-null.jpg" style="height: 21rem;" />
+<a href="https://www.reddit.com/r/ProgrammerHumor/comments/6f68rv/difference_between_0_and_null/" class="caption" style="margin-left:0">https://www.reddit.com/r/ProgrammerHumor...</a>
 
 </v-click>
 
@@ -291,7 +293,8 @@ layout: two-cols
 
 <v-click at="2">
 
-<img src="/content/images/null-hoare-wikipedia.png" style="height: 21rem;" />
+<img src="/content/images/null-hoare-wikipedia.png" />
+<a href="https://en.wikipedia.org/wiki/Tony_Hoare#Apologies_and_retractions" class="caption">https://en.wikipedia.org/wiki/Tony_Hoare#Apologies_and_retractions</a>
 
 </v-click>
 
@@ -995,17 +998,9 @@ RAILWAY
 
 Problem: Keine standardisierte Strategie für Fehlerbehandlung 
 
-```csharp
-
-```
-
----
-
-- Wenn wir davon ausgehen, dass Funktionen auch einen Fehlerfall haben, benötigen wir einen **neuen Datentyp**, der das abbilden kann
+Wenn wir davon ausgehen, dass Funktionen auch einen Fehlerfall haben, benötigen wir einen **neuen Datentyp**, der das abbilden kann
 
 <v-click>
-
-<div class="mt-6">&nbsp;</div>
 
 ### Result
 
@@ -1014,7 +1009,6 @@ Problem: Keine standardisierte Strategie für Fehlerbehandlung
   - oder einen Fehlerfall (Failure)
 
 </v-click>
-
 
 ---
 
@@ -1041,7 +1035,7 @@ Problem: Keine standardisierte Strategie für Fehlerbehandlung
 
 ---
 
-#### Was muss dieser Mechanismus können?
+### Was muss dieser Mechanismus können?
 
 - wenn die Eingabe fehlerhaft ist, muss die Funktion nichts tun, und kann den Fehler weiterreichen
 - wenn die Eingabe nicht fehlerhaft ist, wird der Wert an die Funktion gegeben
